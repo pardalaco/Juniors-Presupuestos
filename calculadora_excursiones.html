@@ -568,6 +568,7 @@
               <select onchange="updateActivity(${index}, 'mode', this.value)">
                 <option value="total" ${activity.mode === "total" ? "selected" : ""}>Total</option>
                 <option value="porPersona" ${activity.mode === "porPersona" ? "selected" : ""}>Por persona</option>
+                <option value="porNino" ${activity.mode === "porNino" ? "selected" : ""}>Por niño</option>
               </select>
             </td>
             <td><button type="button" class="button-secondary" onclick="removeActivity(${index})">Eliminar</button></td>
@@ -596,10 +597,12 @@
         const totalPersonas = ninos + educadores + preeducadores + otros;
 
         const gastosTotal = activities.reduce((sum, activity) => {
-          const base =
-            activity.mode === "porPersona"
-              ? activity.price * totalPersonas
-              : activity.price;
+          let base = activity.price;
+          if (activity.mode === "porPersona") {
+            base = activity.price * totalPersonas;
+          } else if (activity.mode === "porNino") {
+            base = activity.price * ninos;
+          }
           return sum + base;
         }, 0);
         const aportePersonal =
