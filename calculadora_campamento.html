@@ -204,13 +204,44 @@
   .summary-table tr:hover {
     background: var(--color-background-secondary);
   }
-  .theme-toggle {
-    margin-bottom: 1.5rem;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--color-border-tertiary);
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .page-title {
+    min-width: 0;
+  }
+  .page-title h2 {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .page-title p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
     border-radius: 999px;
+    border: 1px solid var(--color-border-tertiary);
     background: var(--color-background-secondary);
     color: var(--color-text-primary);
+    text-decoration: none;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -219,46 +250,37 @@
       color 0.2s ease,
       border-color 0.2s ease;
   }
-  .theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+  .icon-button:hover {
+    background: var(--color-background-primary);
+  }
+  .icon-button .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .theme-toggle {
+    margin-bottom: 0;
   }
 </style>
 
 <div class="container">
-  <a
-    href="index.html"
-    class="theme-toggle"
-    style="
-      margin-right: 0.75rem;
-      text-align: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    "
-    >Inicio</a
-  >
-  <button id="themeToggle" class="theme-toggle" type="button">
-    Modo oscuro
-  </button>
-  <h2
-    style="
-      font-size: 26px;
-      font-weight: 500;
-      color: var(--color-text-primary);
-      margin-bottom: 0.5rem;
-    "
-  >
-    Calculadora de Presupuesto Campamento
-  </h2>
-  <p
-    style="
-      font-size: 14px;
-      color: var(--color-text-secondary);
-      margin-bottom: 2rem;
-    "
-  >
-    Ajusta los parámetros para ver el cálculo en tiempo real
-  </p>
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Calculadora de Presupuesto Campamento</h2>
+      <p>Ajusta los parámetros para ver el cálculo en tiempo real.</p>
+    </div>
+    <div class="header-actions">
+      <a href="index.html" class="icon-button">
+        <span>Inicio</span>
+      </a>
+      <button id="themeToggle" class="icon-button theme-toggle" type="button">
+        <span class="icon">🌓</span>
+        <span>Modo oscuro</span>
+      </button>
+    </div>
+  </div>
 
   <div class="section">
     <div class="section-title">Configuración General</div>
