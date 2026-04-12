@@ -381,7 +381,7 @@ body[data-theme="dark"] {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1.25rem;
   flex-wrap: wrap;
@@ -437,6 +437,13 @@ body[data-theme="dark"] {
 .theme-toggle {
   margin-bottom: 0;
 }
+
+@media (max-width: 720px) {
+  .page-header {
+    align-items: center;
+  }
+}
+
 .hero {
   margin-bottom: 2rem;
 }
@@ -446,7 +453,7 @@ body[data-theme="dark"] {
 }
 .hero p {
   font-size: 16px;
-  color: #475569;
+  color: var(--color-text-secondary);
   line-height: 1.8;
 }
 .cards {
@@ -455,8 +462,8 @@ body[data-theme="dark"] {
   gap: 1.5rem;
 }
 .card {
-  background: #ffffff;
-  border: 0.5px solid #d8dbe7;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
   border-radius: 18px;
   padding: 1.5rem;
   display: flex;
@@ -468,7 +475,7 @@ body[data-theme="dark"] {
   color: #0f172a;
 }
 .card p {
-  color: #475569;
+  color: var(--color-text-secondary);
   line-height: 1.7;
 }
 .card a {

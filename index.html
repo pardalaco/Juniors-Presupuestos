@@ -8,14 +8,26 @@
   </head>
   <body>
     <div class="container">
-      <section class="hero">
-        <h1>Índice de Calculadoras</h1>
-        <p>
-          Aquí puedes elegir entre las calculadoras disponibles para planificar
-          presupuestos. Cada herramienta te ayuda a calcular costes con
-          participantes, transporte, actividades y pagos del personal.
-        </p>
-      </section>
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Índice de Calculadoras</h1>
+          <p>
+            Aquí puedes elegir entre las calculadoras disponibles para
+            planificar presupuestos. Cada herramienta te ayuda a calcular costes
+            con participantes, transporte, actividades y pagos del personal.
+          </p>
+        </div>
+        <div class="header-actions">
+          <button
+            id="themeToggle"
+            class="icon-button theme-toggle"
+            type="button"
+          >
+            <span class="icon">🌓</span>
+            <span>Modo oscuro</span>
+          </button>
+        </div>
+      </div>
 
       <div class="cards">
         <article class="card">
@@ -38,5 +50,43 @@
         </article>
       </div>
     </div>
+    <script>
+      const themeToggle = document.getElementById("themeToggle");
+
+      function setTheme(theme) {
+        const themeLabel = themeToggle?.querySelector("span:last-child");
+
+        if (theme === "dark") {
+          document.body.dataset.theme = "dark";
+          if (themeLabel) themeLabel.textContent = "Modo claro";
+        } else {
+          document.body.removeAttribute("data-theme");
+          if (themeLabel) themeLabel.textContent = "Modo oscuro";
+        }
+        localStorage.setItem("siteTheme", theme);
+      }
+
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem("siteTheme");
+        const preferredTheme = window.matchMedia?.(
+          "(prefers-color-scheme: dark)",
+        ).matches
+          ? "dark"
+          : "light";
+        setTheme(savedTheme || preferredTheme);
+      }
+
+      function toggleTheme() {
+        const current =
+          document.body.dataset.theme === "dark" ? "light" : "dark";
+        setTheme(current);
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", toggleTheme);
+      }
+
+      initializeTheme();
+    </script>
   </body>
 </html>

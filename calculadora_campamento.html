@@ -15,6 +15,7 @@
         </div>
         <div class="header-actions">
           <a href="index.html" class="icon-button">
+            <span class="icon">🏠</span>
             <span>Inicio</span>
           </a>
           <button
@@ -480,18 +481,20 @@
       const themeToggle = document.getElementById("themeToggle");
 
       function setTheme(theme) {
+        const themeLabel = themeToggle?.querySelector("span:last-child");
+
         if (theme === "dark") {
           document.body.dataset.theme = "dark";
-          if (themeToggle) themeToggle.textContent = "Modo claro";
+          if (themeLabel) themeLabel.textContent = "Modo claro";
         } else {
           document.body.removeAttribute("data-theme");
-          if (themeToggle) themeToggle.textContent = "Modo oscuro";
+          if (themeLabel) themeLabel.textContent = "Modo oscuro";
         }
-        localStorage.setItem("campTheme", theme);
+        localStorage.setItem("siteTheme", theme);
       }
 
       function initializeTheme() {
-        const savedTheme = localStorage.getItem("campTheme");
+        const savedTheme = localStorage.getItem("siteTheme");
         const preferredTheme = window.matchMedia?.(
           "(prefers-color-scheme: dark)",
         ).matches
