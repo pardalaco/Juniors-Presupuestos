@@ -154,6 +154,22 @@ body[data-theme="dark"] {
   font-weight: 500;
   color: var(--color-text-secondary);
 }
+
+@media (max-width: 720px) {
+  .participant-pay-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .participant-cell,
+  .payment-cell {
+    min-height: auto;
+  }
+
+  .participant-pay-grid .payment-cell:empty {
+    display: none;
+  }
+}
+
 .rol-subtext {
   font-size: 12px;
   color: var(--color-text-tertiary);
