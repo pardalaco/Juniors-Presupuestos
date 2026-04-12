@@ -1,753 +1,516 @@
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  :root {
-    --color-background: #f7f8fb;
-    --color-background-primary: #ffffff;
-    --color-background-secondary: #f2f4f8;
-    --color-border-primary: #7d8db4;
-    --color-border-tertiary: #d8dbe7;
-    --color-text-primary: #111827;
-    --color-text-secondary: #4b5563;
-    --color-text-tertiary: #6b7280;
-    --color-text-info: #0f6fff;
-    --color-text-success: #166534;
-    --color-background-info: #eff6ff;
-    --color-background-success: #ecfdf5;
-    --border-radius-md: 12px;
-    --border-radius-lg: 18px;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--color-background);
-    color: var(--color-text-primary);
-  }
-  body[data-theme="dark"] {
-    --color-background: #0f172a;
-    --color-background-primary: #111827;
-    --color-background-secondary: #1f2937;
-    --color-border-primary: #4f46e5;
-    --color-border-tertiary: #334155;
-    --color-text-primary: #f8fafc;
-    --color-text-secondary: #cbd5e1;
-    --color-text-tertiary: #94a3b8;
-    --color-text-info: #93c5fd;
-    --color-text-success: #86efac;
-    --color-background-info: #1e3a8a;
-    --color-background-success: #064e3b;
-  }
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1.5rem;
-  }
-  .section {
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .section-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 1.5rem;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    padding-bottom: 1rem;
-  }
-  .input-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .input-group {
-    display: flex;
-    flex-direction: column;
-  }
-  .input-group label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.5rem;
-  }
-  .input-group input,
-  .input-group select {
-    padding: 0.75rem;
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    font-size: 14px;
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-  }
-  .input-group input:focus,
-  .input-group select:focus {
-    outline: none;
-    border-color: var(--color-border-primary);
-  }
-  .rol-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 120px;
-    gap: 1rem;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: var(--color-background-secondary);
-    border-radius: var(--border-radius-md);
-  }
-  .rol-left {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .rol-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-  }
-  .rol-input {
-    padding: 0.75rem;
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    font-size: 14px;
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-  }
-  .rol-input:focus,
-  .precio-input:focus,
-  .input-group input:focus,
-  .input-group select:focus {
-    outline: none;
-    border-color: var(--color-border-primary);
-  }
-  .precio-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .precio-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-  }
-  .precio-input {
-    padding: 0.75rem;
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    font-size: 14px;
-    text-align: center;
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-  }
-  .results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-  .result-card {
-    background: var(--color-background-secondary);
-    border-radius: var(--border-radius-md);
-    padding: 1rem;
-  }
-  .result-label {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-  }
-  .result-value {
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-  }
-  .result-value.highlight {
-    font-size: 26px;
-    color: var(--color-text-info);
-  }
-  .total-cost {
-    grid-column: 1 / -1;
-    background: var(--color-background-info);
-    border-radius: var(--border-radius-md);
-    padding: 1.5rem;
-  }
-  .total-cost .result-label {
-    color: var(--color-text-info);
-  }
-  .total-cost .result-value {
-    color: var(--color-text-info);
-    font-size: 32px;
-  }
-  .summary-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  .summary-table th {
-    background: var(--color-background-secondary);
-    padding: 0.75rem;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 500;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-  }
-  .summary-table td {
-    padding: 0.75rem;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    font-size: 13px;
-  }
-  .summary-table tr:hover {
-    background: var(--color-background-secondary);
-  }
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-  .page-title {
-    min-width: 0;
-  }
-  .page-title h2 {
-    font-size: 26px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 0.25rem;
-  }
-  .page-title p {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .icon-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border-tertiary);
-    background: var(--color-background-secondary);
-    color: var(--color-text-primary);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-  .icon-button:hover {
-    background: var(--color-background-primary);
-  }
-  .icon-button .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.2rem;
-    height: 1.2rem;
-  }
-  .theme-toggle {
-    margin-bottom: 0;
-  }
-</style>
-
-<div class="container">
-  <div class="page-header">
-    <div class="page-title">
-      <h2>Calculadora de Presupuesto Campamento</h2>
-      <p>Ajusta los parámetros para ver el cálculo en tiempo real.</p>
-    </div>
-    <div class="header-actions">
-      <a href="index.html" class="icon-button">
-        <span>Inicio</span>
-      </a>
-      <button id="themeToggle" class="icon-button theme-toggle" type="button">
-        <span class="icon">🌓</span>
-        <span>Modo oscuro</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Configuración General</div>
-
-    <div class="input-grid">
-      <div class="input-group">
-        <label>Número de días</label>
-        <input
-          type="number"
-          id="dias"
-          value="9"
-          min="1"
-          max="30"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Número de niños</label>
-        <input
-          type="number"
-          id="ninos"
-          value="35"
-          min="10"
-          max="150"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Coste noche/persona (€)</label>
-        <input
-          type="number"
-          id="costeNoche"
-          value="11"
-          min="0"
-          step="0.5"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Precio comida/persona (€)</label>
-        <input
-          type="number"
-          id="precioComida"
-          value="8"
-          min="0"
-          step="0.5"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Margen por niño (€)</label>
-        <input
-          type="number"
-          id="margen"
-          value="20"
-          min="0"
-          step="1"
-          onchange="calculate()"
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Personal del Campamento</div>
-    <p
-      style="
-        font-size: 12px;
-        color: var(--color-text-tertiary);
-        margin-bottom: 1.5rem;
-      "
-    >
-      Ajusta el número de personas y el precio total que paga cada grupo.
-    </p>
-
-    <div class="rol-wrapper">
-      <div class="rol-left">
-        <div class="rol-label">Educadores</div>
-        <input
-          type="number"
-          id="educadores"
-          value="13"
-          min="0"
-          max="50"
-          class="rol-input"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="precio-section">
-        <div class="precio-label">Pagan (€/total)</div>
-        <input
-          type="number"
-          id="precioEducador"
-          value="100"
-          min="0"
-          step="0.5"
-          class="precio-input"
-          onchange="calculate()"
-        />
-      </div>
-    </div>
-
-    <div class="rol-wrapper">
-      <div class="rol-left">
-        <div class="rol-label">Preeducadores</div>
-        <input
-          type="number"
-          id="preeducadores"
-          value="7"
-          min="0"
-          class="rol-input"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="precio-section">
-        <div class="precio-label">Pagan (€/total)</div>
-        <input
-          type="number"
-          id="precioPreeducador"
-          value="150"
-          min="0"
-          step="0.5"
-          class="precio-input"
-          onchange="calculate()"
-        />
-      </div>
-    </div>
-
-    <div class="rol-wrapper">
-      <div class="rol-left">
-        <div class="rol-label">Cocina y otros</div>
-        <input
-          type="number"
-          id="cocina"
-          value="6"
-          min="0"
-          max="20"
-          class="rol-input"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="precio-section">
-        <div class="precio-label">Pagan (€/total)</div>
-        <input
-          type="number"
-          id="precioCocina"
-          value="0"
-          min="0"
-          step="0.5"
-          class="precio-input"
-          onchange="calculate()"
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Costes de Transporte y Material</div>
-    <div class="input-grid">
-      <div class="input-group">
-        <label>Precio autobús (€)</label>
-        <input
-          type="number"
-          id="autobus"
-          value="750"
-          min="0"
-          step="50"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Presupuesto Material (€)</label>
-        <input
-          type="number"
-          id="material"
-          value="850"
-          min="0"
-          step="50"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Presupuesto Furgoneta (€)</label>
-        <input
-          type="number"
-          id="furgoneta"
-          value="750"
-          min="0"
-          step="50"
-          onchange="calculate()"
-        />
-      </div>
-      <div class="input-group">
-        <label>Gasolina Campamento (€)</label>
-        <input
-          type="number"
-          id="gasolina"
-          value="150"
-          min="0"
-          step="50"
-          onchange="calculate()"
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Resultados del Cálculo</div>
-    <div class="results-grid">
-      <div class="result-card">
-        <div class="result-label">Coste persona/día</div>
-        <div class="result-value" id="costoPersonaDia">19€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Estancia + comida total / persona</div>
-        <div class="result-value" id="estanciaComida">171€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Autobús/niño</div>
-        <div class="result-value" id="costAutobus">21€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Material/niño</div>
-        <div class="result-value" id="costMaterial">24€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Furgoneta/niño</div>
-        <div class="result-value" id="costFurgoneta">26€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Coste personal</div>
-        <div class="result-value" id="costEducadores">42€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Margen</div>
-        <div class="result-value" id="costMargen">20€</div>
-      </div>
-      <div class="result-card">
-        <div class="result-label">Total personas</div>
-        <div class="result-value" id="totalPersonas">20</div>
-      </div>
-      <div class="total-cost">
-        <div class="result-label">Precio total por niño</div>
-        <div class="result-value highlight" id="precioTotal">304€</div>
-      </div>
-      <div
-        class="total-cost"
-        style="background: var(--color-background-success); margin-top: 1rem"
-      >
-        <div class="result-label" style="color: var(--color-text-success)">
-          Presupuesto Total del Campamento
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Presupuesto Campamento</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <div class="page-title">
+          <h2>Calculadora de Presupuesto Campamento</h2>
+          <p>Ajusta los parámetros para ver el cálculo en tiempo real.</p>
         </div>
-        <div
-          class="result-value highlight"
-          id="presupuestoTotal"
-          style="color: var(--color-text-success); font-size: 32px"
+        <div class="header-actions">
+          <a href="index.html" class="icon-button">
+            <span>Inicio</span>
+          </a>
+          <button
+            id="themeToggle"
+            class="icon-button theme-toggle"
+            type="button"
+          >
+            <span class="icon">🌓</span>
+            <span>Modo oscuro</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Configuración General</div>
+
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Número de días</label>
+            <input
+              type="number"
+              id="dias"
+              value="9"
+              min="1"
+              max="30"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Número de niños</label>
+            <input
+              type="number"
+              id="ninos"
+              value="35"
+              min="10"
+              max="150"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Coste noche/persona (€)</label>
+            <input
+              type="number"
+              id="costeNoche"
+              value="11"
+              min="0"
+              step="0.5"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Precio comida/persona (€)</label>
+            <input
+              type="number"
+              id="precioComida"
+              value="8"
+              min="0"
+              step="0.5"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Margen por niño (€)</label>
+            <input
+              type="number"
+              id="margen"
+              value="20"
+              min="0"
+              step="1"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Personal del Campamento</div>
+        <p
+          style="
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            margin-bottom: 1.5rem;
+          "
         >
-          0€
+          Ajusta el número de personas y el precio total que paga cada grupo.
+        </p>
+
+        <div class="rol-wrapper">
+          <div class="rol-left">
+            <div class="rol-label">Educadores</div>
+            <input
+              type="number"
+              id="educadores"
+              value="13"
+              min="0"
+              max="50"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="precio-section">
+            <div class="precio-label">Pagan (€/total)</div>
+            <input
+              type="number"
+              id="precioEducador"
+              value="100"
+              min="0"
+              step="0.5"
+              class="precio-input"
+              onchange="calculate()"
+            />
+          </div>
         </div>
+
+        <div class="rol-wrapper">
+          <div class="rol-left">
+            <div class="rol-label">Preeducadores</div>
+            <input
+              type="number"
+              id="preeducadores"
+              value="7"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="precio-section">
+            <div class="precio-label">Pagan (€/total)</div>
+            <input
+              type="number"
+              id="precioPreeducador"
+              value="150"
+              min="0"
+              step="0.5"
+              class="precio-input"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+
+        <div class="rol-wrapper">
+          <div class="rol-left">
+            <div class="rol-label">Cocina y otros</div>
+            <input
+              type="number"
+              id="cocina"
+              value="6"
+              min="0"
+              max="20"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="precio-section">
+            <div class="precio-label">Pagan (€/total)</div>
+            <input
+              type="number"
+              id="precioCocina"
+              value="0"
+              min="0"
+              step="0.5"
+              class="precio-input"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Costes de Transporte y Material</div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Precio autobús (€)</label>
+            <input
+              type="number"
+              id="autobus"
+              value="750"
+              min="0"
+              step="50"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Presupuesto Material (€)</label>
+            <input
+              type="number"
+              id="material"
+              value="850"
+              min="0"
+              step="50"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Presupuesto Furgoneta (€)</label>
+            <input
+              type="number"
+              id="furgoneta"
+              value="750"
+              min="0"
+              step="50"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="input-group">
+            <label>Gasolina Campamento (€)</label>
+            <input
+              type="number"
+              id="gasolina"
+              value="150"
+              min="0"
+              step="50"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Resultados del Cálculo</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Coste persona/día</div>
+            <div class="result-value" id="costoPersonaDia">19€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Estancia + comida total / persona</div>
+            <div class="result-value" id="estanciaComida">171€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Autobús/niño</div>
+            <div class="result-value" id="costAutobus">21€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Material/niño</div>
+            <div class="result-value" id="costMaterial">24€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Furgoneta/niño</div>
+            <div class="result-value" id="costFurgoneta">26€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Coste personal</div>
+            <div class="result-value" id="costEducadores">42€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Margen</div>
+            <div class="result-value" id="costMargen">20€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total personas</div>
+            <div class="result-value" id="totalPersonas">20</div>
+          </div>
+          <div class="total-cost">
+            <div class="result-label">Precio total por niño</div>
+            <div class="result-value highlight" id="precioTotal">304€</div>
+          </div>
+          <div
+            class="total-cost"
+            style="
+              background: var(--color-background-success);
+              margin-top: 1rem;
+            "
+          >
+            <div class="result-label" style="color: var(--color-text-success)">
+              Presupuesto Total del Campamento
+            </div>
+            <div
+              class="result-value highlight"
+              id="presupuestoTotal"
+              style="color: var(--color-text-success); font-size: 32px"
+            >
+              0€
+            </div>
+          </div>
+        </div>
+
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th style="text-align: right">Coste Total (€)</th>
+              <th style="text-align: right">% Niños</th>
+              <th style="text-align: right">% Personal</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody"></tbody>
+        </table>
       </div>
     </div>
 
-    <table class="summary-table">
-      <thead>
-        <tr>
-          <th>Concepto</th>
-          <th style="text-align: right">Coste Total (€)</th>
-          <th style="text-align: right">% Niños</th>
-          <th style="text-align: right">% Personal</th>
-        </tr>
-      </thead>
-      <tbody id="summaryBody"></tbody>
-    </table>
-  </div>
-</div>
+    <script>
+      function calculate() {
+        const dias = parseInt(document.getElementById("dias").value);
+        const ninos = parseInt(document.getElementById("ninos").value);
+        const educadores = parseInt(
+          document.getElementById("educadores").value,
+        );
+        const preeducadores = parseInt(
+          document.getElementById("preeducadores").value,
+        );
+        const cocina = parseInt(document.getElementById("cocina").value);
 
-<script>
-  function calculate() {
-    const dias = parseInt(document.getElementById("dias").value);
-    const ninos = parseInt(document.getElementById("ninos").value);
-    const educadores = parseInt(document.getElementById("educadores").value);
-    const preeducadores = parseInt(
-      document.getElementById("preeducadores").value,
-    );
-    const cocina = parseInt(document.getElementById("cocina").value);
+        const costeNoche = parseFloat(
+          document.getElementById("costeNoche").value,
+        );
+        const precioComida = parseFloat(
+          document.getElementById("precioComida").value,
+        );
+        const margen = parseFloat(document.getElementById("margen").value);
 
-    const costeNoche = parseFloat(document.getElementById("costeNoche").value);
-    const precioComida = parseFloat(
-      document.getElementById("precioComida").value,
-    );
-    const margen = parseFloat(document.getElementById("margen").value);
+        const autobus = parseFloat(document.getElementById("autobus").value);
+        const material = parseFloat(document.getElementById("material").value);
+        const furgoneta = parseFloat(
+          document.getElementById("furgoneta").value,
+        );
+        const gasolina = parseFloat(document.getElementById("gasolina").value);
 
-    const autobus = parseFloat(document.getElementById("autobus").value);
-    const material = parseFloat(document.getElementById("material").value);
-    const furgoneta = parseFloat(document.getElementById("furgoneta").value);
-    const gasolina = parseFloat(document.getElementById("gasolina").value);
+        const precioEducador = parseFloat(
+          document.getElementById("precioEducador").value,
+        );
+        const precioPreeducador = parseFloat(
+          document.getElementById("precioPreeducador").value,
+        );
+        const precioCocina = parseFloat(
+          document.getElementById("precioCocina").value,
+        );
 
-    const precioEducador = parseFloat(
-      document.getElementById("precioEducador").value,
-    );
-    const precioPreeducador = parseFloat(
-      document.getElementById("precioPreeducador").value,
-    );
-    const precioCocina = parseFloat(
-      document.getElementById("precioCocina").value,
-    );
+        const costoPersonaDia = costeNoche + precioComida;
+        const estanciaComidaTotalNiño = costoPersonaDia * dias;
 
-    const costoPersonaDia = costeNoche + precioComida;
-    const estanciaComidaTotalNiño = costoPersonaDia * dias;
+        const costAutobus = autobus / ninos;
+        const costMaterial = material / ninos;
+        const costFurgoneta = (furgoneta + gasolina) / ninos;
 
-    const costAutobus = autobus / ninos;
-    const costMaterial = material / ninos;
-    const costFurgoneta = (furgoneta + gasolina) / ninos;
+        // El coste real de cada personal es el mismo que el de un niño (estancia + comida)
+        const costeRealPersonal = costoPersonaDia * dias;
 
-    // El coste real de cada personal es el mismo que el de un niño (estancia + comida)
-    const costeRealPersonal = costoPersonaDia * dias;
+        // Lo que los niños tienen que "subvencionar" es la diferencia entre el coste real y lo que paga el personal
+        const subvencionEducadores =
+          (costeRealPersonal - precioEducador) * educadores;
+        const subvencionPreeducadores =
+          (costeRealPersonal - precioPreeducador) * preeducadores;
+        const subvencionCocina = (costeRealPersonal - precioCocina) * cocina;
 
-    // Lo que los niños tienen que "subvencionar" es la diferencia entre el coste real y lo que paga el personal
-    const subvencionEducadores =
-      (costeRealPersonal - precioEducador) * educadores;
-    const subvencionPreeducadores =
-      (costeRealPersonal - precioPreeducador) * preeducadores;
-    const subvencionCocina = (costeRealPersonal - precioCocina) * cocina;
+        const costoPersonalAsumidoNinos =
+          (subvencionEducadores + subvencionPreeducadores + subvencionCocina) /
+          ninos;
 
-    const costoPersonalAsumidoNinos =
-      (subvencionEducadores + subvencionPreeducadores + subvencionCocina) /
-      ninos;
+        const precioTotal =
+          Math.round(
+            (estanciaComidaTotalNiño +
+              costAutobus +
+              costMaterial +
+              costFurgoneta +
+              costoPersonalAsumidoNinos +
+              margen) *
+              100,
+          ) / 100;
 
-    const precioTotal =
-      Math.round(
-        (estanciaComidaTotalNiño +
-          costAutobus +
-          costMaterial +
-          costFurgoneta +
-          costoPersonalAsumidoNinos +
-          margen) *
-          100,
-      ) / 100;
+        document.getElementById("costoPersonaDia").textContent =
+          Math.round(costoPersonaDia * 100) / 100 + "€";
+        document.getElementById("estanciaComida").textContent =
+          Math.round(estanciaComidaTotalNiño * 100) / 100 + "€";
+        document.getElementById("costAutobus").textContent =
+          Math.round(costAutobus * 100) / 100 + "€";
+        document.getElementById("costMaterial").textContent =
+          Math.round(costMaterial * 100) / 100 + "€";
+        document.getElementById("costFurgoneta").textContent =
+          Math.round(costFurgoneta * 100) / 100 + "€";
+        document.getElementById("costEducadores").textContent =
+          Math.round(costoPersonalAsumidoNinos * 100) / 100 + "€";
+        document.getElementById("costMargen").textContent =
+          Math.round(margen * 100) / 100 + "€";
+        document.getElementById("totalPersonas").textContent =
+          ninos + educadores + preeducadores + cocina;
+        document.getElementById("precioTotal").textContent = precioTotal + "€";
 
-    document.getElementById("costoPersonaDia").textContent =
-      Math.round(costoPersonaDia * 100) / 100 + "€";
-    document.getElementById("estanciaComida").textContent =
-      Math.round(estanciaComidaTotalNiño * 100) / 100 + "€";
-    document.getElementById("costAutobus").textContent =
-      Math.round(costAutobus * 100) / 100 + "€";
-    document.getElementById("costMaterial").textContent =
-      Math.round(costMaterial * 100) / 100 + "€";
-    document.getElementById("costFurgoneta").textContent =
-      Math.round(costFurgoneta * 100) / 100 + "€";
-    document.getElementById("costEducadores").textContent =
-      Math.round(costoPersonalAsumidoNinos * 100) / 100 + "€";
-    document.getElementById("costMargen").textContent =
-      Math.round(margen * 100) / 100 + "€";
-    document.getElementById("totalPersonas").textContent =
-      ninos + educadores + preeducadores + cocina;
-    document.getElementById("precioTotal").textContent = precioTotal + "€";
+        // Cálculo del presupuesto total del campamento (lo que pagan niños + lo que paga el personal)
+        const totalPagadoNinos = precioTotal * ninos;
+        const totalPagadoEducadores = precioEducador * educadores;
+        const totalPagadoPreeducadores = precioPreeducador * preeducadores;
+        const totalPagadoCocina = precioCocina * cocina;
 
-    // Cálculo del presupuesto total del campamento (lo que pagan niños + lo que paga el personal)
-    const totalPagadoNinos = precioTotal * ninos;
-    const totalPagadoEducadores = precioEducador * educadores;
-    const totalPagadoPreeducadores = precioPreeducador * preeducadores;
-    const totalPagadoCocina = precioCocina * cocina;
+        const presupuestoTotal =
+          Math.round(
+            (totalPagadoNinos +
+              totalPagadoEducadores +
+              totalPagadoPreeducadores +
+              totalPagadoCocina) *
+              100,
+          ) / 100;
 
-    const presupuestoTotal =
-      Math.round(
-        (totalPagadoNinos +
-          totalPagadoEducadores +
-          totalPagadoPreeducadores +
-          totalPagadoCocina) *
-          100,
-      ) / 100;
+        document.getElementById("presupuestoTotal").textContent =
+          presupuestoTotal.toLocaleString("es-ES") + "€";
 
-    document.getElementById("presupuestoTotal").textContent =
-      presupuestoTotal.toLocaleString("es-ES") + "€";
+        // Cálculo para la tabla resumen (qué porcentaje del coste real de cada grupo cubren ellos mismos)
+        const porcPagaEducador = (precioEducador / costeRealPersonal) * 100;
+        const porcPagaPreeducador =
+          (precioPreeducador / costeRealPersonal) * 100;
+        const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
 
-    // Cálculo para la tabla resumen (qué porcentaje del coste real de cada grupo cubren ellos mismos)
-    const porcPagaEducador = (precioEducador / costeRealPersonal) * 100;
-    const porcPagaPreeducador = (precioPreeducador / costeRealPersonal) * 100;
-    const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
+        const summary = [
+          {
+            concepto: "Estancia + Comida (Niños)",
+            total: Math.round(estanciaComidaTotalNiño * ninos * 100) / 100,
+            ninos: 100,
+            personal: 0,
+          },
+          {
+            concepto: "Transporte (Autobús + Furgoneta)",
+            total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
+            ninos: 100,
+            personal: 0,
+          },
+          {
+            concepto: "Material",
+            total: Math.round(material * 100) / 100,
+            ninos: 100,
+            personal: 0,
+          },
+          {
+            concepto: "Estancia + Comida (Educadores)",
+            total: Math.round(costeRealPersonal * educadores * 100) / 100,
+            ninos: Math.max(0, Math.round((100 - porcPagaEducador) * 10) / 10),
+            personal: Math.min(100, Math.round(porcPagaEducador * 10) / 10),
+          },
+          {
+            concepto: "Estancia + Comida (Preeducadores)",
+            total: Math.round(costeRealPersonal * preeducadores * 100) / 100,
+            ninos: Math.max(
+              0,
+              Math.round((100 - porcPagaPreeducador) * 10) / 10,
+            ),
+            personal: Math.min(100, Math.round(porcPagaPreeducador * 10) / 10),
+          },
+        ];
 
-    const summary = [
-      {
-        concepto: "Estancia + Comida (Niños)",
-        total: Math.round(estanciaComidaTotalNiño * ninos * 100) / 100,
-        ninos: 100,
-        personal: 0,
-      },
-      {
-        concepto: "Transporte (Autobús + Furgoneta)",
-        total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
-        ninos: 100,
-        personal: 0,
-      },
-      {
-        concepto: "Material",
-        total: Math.round(material * 100) / 100,
-        ninos: 100,
-        personal: 0,
-      },
-      {
-        concepto: "Estancia + Comida (Educadores)",
-        total: Math.round(costeRealPersonal * educadores * 100) / 100,
-        ninos: Math.max(0, Math.round((100 - porcPagaEducador) * 10) / 10),
-        personal: Math.min(100, Math.round(porcPagaEducador * 10) / 10),
-      },
-      {
-        concepto: "Estancia + Comida (Preeducadores)",
-        total: Math.round(costeRealPersonal * preeducadores * 100) / 100,
-        ninos: Math.max(0, Math.round((100 - porcPagaPreeducador) * 10) / 10),
-        personal: Math.min(100, Math.round(porcPagaPreeducador * 10) / 10),
-      },
-    ];
+        if (cocina > 0) {
+          summary.push({
+            concepto: "Estancia + Comida (Cocina/Otros)",
+            total: Math.round(costeRealPersonal * cocina * 100) / 100,
+            ninos: Math.max(0, Math.round((100 - porcPagaCocina) * 10) / 10),
+            personal: Math.min(100, Math.round(porcPagaCocina * 10) / 10),
+          });
+        }
 
-    if (cocina > 0) {
-      summary.push({
-        concepto: "Estancia + Comida (Cocina/Otros)",
-        total: Math.round(costeRealPersonal * cocina * 100) / 100,
-        ninos: Math.max(0, Math.round((100 - porcPagaCocina) * 10) / 10),
-        personal: Math.min(100, Math.round(porcPagaCocina * 10) / 10),
-      });
-    }
-
-    let html = "";
-    summary.forEach((item) => {
-      if (item.total > 0) {
-        html += `<tr>
+        let html = "";
+        summary.forEach((item) => {
+          if (item.total > 0) {
+            html += `<tr>
         <td>${item.concepto}</td>
         <td style="text-align: right;">${item.total}€</td>
         <td style="text-align: right; color: var(--color-text-info);">${item.ninos}%</td>
         <td style="text-align: right;">${item.personal}%</td>
       </tr>`;
+          }
+        });
+        document.getElementById("summaryBody").innerHTML = html;
       }
-    });
-    document.getElementById("summaryBody").innerHTML = html;
-  }
 
-  const themeToggle = document.getElementById("themeToggle");
+      const themeToggle = document.getElementById("themeToggle");
 
-  function setTheme(theme) {
-    if (theme === "dark") {
-      document.body.dataset.theme = "dark";
-      if (themeToggle) themeToggle.textContent = "Modo claro";
-    } else {
-      document.body.removeAttribute("data-theme");
-      if (themeToggle) themeToggle.textContent = "Modo oscuro";
-    }
-    localStorage.setItem("campTheme", theme);
-  }
+      function setTheme(theme) {
+        if (theme === "dark") {
+          document.body.dataset.theme = "dark";
+          if (themeToggle) themeToggle.textContent = "Modo claro";
+        } else {
+          document.body.removeAttribute("data-theme");
+          if (themeToggle) themeToggle.textContent = "Modo oscuro";
+        }
+        localStorage.setItem("campTheme", theme);
+      }
 
-  function initializeTheme() {
-    const savedTheme = localStorage.getItem("campTheme");
-    const preferredTheme = window.matchMedia?.("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    setTheme(savedTheme || preferredTheme);
-  }
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem("campTheme");
+        const preferredTheme = window.matchMedia?.(
+          "(prefers-color-scheme: dark)",
+        ).matches
+          ? "dark"
+          : "light";
+        setTheme(savedTheme || preferredTheme);
+      }
 
-  function toggleTheme() {
-    const current = document.body.dataset.theme === "dark" ? "light" : "dark";
-    setTheme(current);
-  }
+      function toggleTheme() {
+        const current =
+          document.body.dataset.theme === "dark" ? "light" : "dark";
+        setTheme(current);
+      }
 
-  if (themeToggle) {
-    themeToggle.addEventListener("click", toggleTheme);
-  }
+      if (themeToggle) {
+        themeToggle.addEventListener("click", toggleTheme);
+      }
 
-  initializeTheme();
-  calculate();
-</script>
+      initializeTheme();
+      calculate();
+    </script>
+  </body>
+</html>
