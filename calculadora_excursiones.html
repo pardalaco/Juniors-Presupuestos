@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Excursiones</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --color-background: #f7f8fb;
+        --color-background-primary: #ffffff;
+        --color-background-secondary: #f2f4f8;
+        --color-border-primary: #7d8db4;
+        --color-border-tertiary: #d8dbe7;
+        --color-text-primary: #111827;
+        --color-text-secondary: #4b5563;
+        --color-text-tertiary: #6b7280;
+        --color-text-info: #0f6fff;
+        --color-text-success: #166534;
+        --color-background-info: #eff6ff;
+        --color-background-success: #ecfdf5;
+        --border-radius-md: 12px;
+        --border-radius-lg: 18px;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+      }
+      body[data-theme="dark"] {
+        --color-background: #0f172a;
+        --color-background-primary: #111827;
+        --color-background-secondary: #1f2937;
+        --color-border-primary: #4f46e5;
+        --color-border-tertiary: #334155;
+        --color-text-primary: #f8fafc;
+        --color-text-secondary: #cbd5e1;
+        --color-text-tertiary: #94a3b8;
+        --color-text-info: #93c5fd;
+        --color-text-success: #86efac;
+        --color-background-info: #1e3a8a;
+        --color-background-success: #064e3b;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
+      .section {
+        background: var(--color-background-primary);
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .section-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--color-text-primary);
+        margin-bottom: 1.5rem;
+        border-bottom: 0.5px solid var(--color-border-tertiary);
+        padding-bottom: 1rem;
+      }
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .input-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .input-group label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+      .input-group input,
+      .input-group select,
+      .input-group button {
+        padding: 0.75rem;
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-md);
+        font-size: 14px;
+        background: var(--color-background-primary);
+        color: var(--color-text-primary);
+      }
+      .input-group input:focus,
+      .input-group select:focus,
+      .input-group button:focus {
+        outline: none;
+        border-color: var(--color-border-primary);
+      }
+      .rol-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--color-background-secondary);
+        border-radius: var(--border-radius-md);
+      }
+      .rol-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .rol-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+      .rol-input,
+      .precio-input {
+        padding: 0.75rem;
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-md);
+        font-size: 14px;
+        background: var(--color-background-primary);
+        color: var(--color-text-primary);
+      }
+      .precio-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .precio-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+      }
+      .participant-pay-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      .participant-cell,
+      .payment-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: var(--color-background-secondary);
+        border-radius: var(--border-radius-md);
+        border: 0.5px solid var(--color-border-tertiary);
+      }
+      .participant-cell,
+      .payment-cell {
+        min-height: 150px;
+      }
+      .participant-cell label,
+      .payment-cell label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+      }
+      .rol-subtext {
+        font-size: 12px;
+        color: var(--color-text-tertiary);
+      }
+      .rol-total {
+        font-size: 12px;
+        color: var(--color-text-info);
+      }
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      .result-card {
+        background: var(--color-background-secondary);
+        border-radius: var(--border-radius-md);
+        padding: 1rem;
+      }
+      .result-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+      }
+      .result-value {
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+      .result-value.highlight {
+        font-size: 26px;
+        color: var(--color-text-info);
+      }
+      .total-cost {
+        grid-column: 1 / -1;
+        background: var(--color-background-info);
+        border-radius: var(--border-radius-md);
+        padding: 1.5rem;
+      }
+      .total-cost .result-label {
+        color: var(--color-text-info);
+      }
+      .total-cost .result-value {
+        color: var(--color-text-info);
+        font-size: 32px;
+      }
+      .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      .summary-table th {
+        background: var(--color-background-secondary);
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 500;
+        border-bottom: 0.5px solid var(--color-border-tertiary);
+      }
+      .summary-table td {
+        padding: 0.75rem;
+        border-bottom: 0.5px solid var(--color-border-tertiary);
+        font-size: 13px;
+      }
+      .summary-table tr:hover {
+        background: var(--color-background-secondary);
+      }
+      .activity-list {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 1rem;
+        background: var(--color-background-primary);
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-md);
+        overflow: hidden;
+      }
+      .activity-list th,
+      .activity-list td {
+        padding: 0.85rem 0.9rem;
+        border-bottom: 0.5px solid var(--color-border-tertiary);
+      }
+      .activity-list th {
+        background: var(--color-background-secondary);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+      }
+      .activity-list tbody tr:nth-child(odd) {
+        background: var(--color-background-secondary);
+      }
+      .activity-list input,
+      .activity-list select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-md);
+        font-size: 14px;
+        background: var(--color-background-primary);
+        color: var(--color-text-primary);
+      }
+      .activity-list select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image:
+          linear-gradient(
+            45deg,
+            transparent 50%,
+            var(--color-text-primary) 50%
+          ),
+          linear-gradient(
+            135deg,
+            var(--color-text-primary) 50%,
+            transparent 50%
+          );
+        background-position:
+          calc(100% - 1rem) calc(50% - 0.1rem),
+          calc(100% - 0.75rem) calc(50% - 0.1rem);
+        background-size:
+          0.45rem 0.45rem,
+          0.45rem 0.45rem;
+        background-repeat: no-repeat;
+        padding-right: 2rem;
+      }
+      .activity-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 0.75rem;
+      }
+      .button-secondary,
+      .button-primary {
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-md);
+        background: var(--color-background-primary);
+        color: var(--color-text-primary);
+        cursor: pointer;
+        font-size: 14px;
+        padding: 0.75rem 1rem;
+      }
+      .button-primary {
+        background: var(--color-text-info);
+        color: white;
+        border-color: transparent;
+      }
+      .button-secondary:hover,
+      .button-primary:hover {
+        opacity: 0.9;
+      }
+      .theme-toggle {
+        margin-bottom: 1.5rem;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--color-border-tertiary);
+        border-radius: 999px;
+        background: var(--color-background-secondary);
+        color: var(--color-text-primary);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="themeToggle" class="theme-toggle" type="button">
+        Modo oscuro
+      </button>
+      <h2
+        style="
+          font-size: 26px;
+          font-weight: 500;
+          color: var(--color-text-primary);
+          margin-bottom: 0.5rem;
+        "
+      >
+        Calculadora de Excursiones
+      </h2>
+      <p
+        style="
+          font-size: 14px;
+          color: var(--color-text-secondary);
+          margin-bottom: 2rem;
+        "
+      >
+        Ajusta niños, gastos, actividades y pagos del personal para ver el
+        precio final.
+      </p>
+
+      <div class="section">
+        <div class="section-title">Participantes y pagos del personal</div>
+        <div class="participant-pay-grid">
+          <div class="participant-cell">
+            <label>Número de niños</label>
+            <input
+              type="number"
+              id="ninos"
+              value="35"
+              min="1"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell"></div>
+
+          <div class="participant-cell">
+            <label>Educadores</label>
+            <input
+              type="number"
+              id="educadores"
+              value="5"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/educador</label>
+            <input
+              type="number"
+              id="pagoEducadores"
+              value="120"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+
+          <div class="participant-cell">
+            <label>Preeducadores</label>
+            <input
+              type="number"
+              id="preeducadores"
+              value="3"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/preeducador</label>
+            <input
+              type="number"
+              id="pagoPreeducadores"
+              value="80"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+
+          <div class="participant-cell">
+            <label>Otros</label>
+            <input
+              type="number"
+              id="otros"
+              value="2"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/otros</label>
+            <input
+              type="number"
+              id="pagoOtros"
+              value="50"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Gastos y actividades</div>
+        <p
+          style="
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+          "
+        >
+          Añade transporte como gasto junto a otras actividades y servicios.
+        </p>
+        <table class="activity-list">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Modo</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="activityBody"></tbody>
+        </table>
+        <div class="activity-actions">
+          <button
+            class="button-secondary"
+            type="button"
+            onclick="addActivity()"
+          >
+            Añadir gasto/actividad
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Resultados</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Coste servicios</div>
+            <div class="result-value" id="gastosTotal">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Aporte personal</div>
+            <div class="result-value" id="aportePersonal">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total grupo</div>
+            <div class="result-value" id="totalGrupo">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Precio por niño</div>
+            <div class="result-value highlight" id="precioPorNino">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total personas</div>
+            <div class="result-value" id="totalPersonas">0</div>
+          </div>
+        </div>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th style="text-align: right">Total (€)</th>
+              <th style="text-align: right">Detalles</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const activities = [
+        {
+          name: "Transporte",
+          price: 700,
+          mode: "total",
+        },
+        {
+          name: "Museo",
+          price: 5,
+          mode: "porPersona",
+        },
+      ];
+
+      function formatCurrency(value) {
+        return Math.round(value * 100) / 100 + "€";
+      }
+
+      function addActivity() {
+        activities.push({ name: "Nueva actividad", price: 0, mode: "total" });
+        renderActivities();
+        calculate();
+      }
+
+      function removeActivity(index) {
+        activities.splice(index, 1);
+        renderActivities();
+        calculate();
+      }
+
+      function updateActivity(index, field, value) {
+        if (field === "name") {
+          activities[index].name = value;
+        } else if (field === "price") {
+          activities[index].price = parseFloat(value) || 0;
+        } else if (field === "mode") {
+          activities[index].mode = value;
+        }
+        calculate();
+      }
+
+      function renderActivities() {
+        const body = document.getElementById("activityBody");
+        body.innerHTML = "";
+        activities.forEach((activity, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td><input type="text" value="${activity.name}" class="rol-input" onchange="updateActivity(${index}, 'name', this.value)" /></td>
+            <td><input type="number" min="0" step="0.5" value="${activity.price}" class="rol-input" onchange="updateActivity(${index}, 'price', this.value)" /></td>
+            <td>
+              <select onchange="updateActivity(${index}, 'mode', this.value)">
+                <option value="total" ${activity.mode === "total" ? "selected" : ""}>Total</option>
+                <option value="porPersona" ${activity.mode === "porPersona" ? "selected" : ""}>Por persona</option>
+              </select>
+            </td>
+            <td><button type="button" class="button-secondary" onclick="removeActivity(${index})">Eliminar</button></td>
+          `;
+          body.appendChild(row);
+        });
+      }
+
+      function calculate() {
+        const ninos = parseInt(document.getElementById("ninos").value) || 0;
+        const educadores =
+          parseInt(document.getElementById("educadores").value) || 0;
+        const preeducadores =
+          parseInt(document.getElementById("preeducadores").value) || 0;
+        const otros = parseInt(document.getElementById("otros").value) || 0;
+
+        const pagoEducadores =
+          parseFloat(document.getElementById("pagoEducadores").value) || 0;
+        const pagoPreeducadores =
+          parseFloat(document.getElementById("pagoPreeducadores").value) || 0;
+        const pagoOtros =
+          parseFloat(document.getElementById("pagoOtros").value) || 0;
+        const pagoEducadoresTotal = pagoEducadores * educadores;
+        const pagoPreeducadoresTotal = pagoPreeducadores * preeducadores;
+        const pagoOtrosTotal = pagoOtros * otros;
+        const totalPersonas = ninos + educadores + preeducadores + otros;
+
+        const gastosTotal = activities.reduce((sum, activity) => {
+          const base =
+            activity.mode === "porPersona"
+              ? activity.price * totalPersonas
+              : activity.price;
+          return sum + base;
+        }, 0);
+        const aportePersonal =
+          pagoEducadoresTotal + pagoPreeducadoresTotal + pagoOtrosTotal;
+        const totalGrupo = gastosTotal;
+        const costePorNino =
+          ninos > 0 ? Math.max(0, totalGrupo - aportePersonal) / ninos : 0;
+
+        document.getElementById("gastosTotal").textContent =
+          formatCurrency(gastosTotal);
+        document.getElementById("aportePersonal").textContent =
+          formatCurrency(aportePersonal);
+        document.getElementById("totalGrupo").textContent =
+          formatCurrency(totalGrupo);
+        document.getElementById("precioPorNino").textContent =
+          formatCurrency(costePorNino);
+        document.getElementById("totalPersonas").textContent = totalPersonas;
+
+        const summary = [
+          {
+            concepto: "Gastos y actividades",
+            total: gastosTotal,
+            detalle: activities.length + " gasto(s)",
+          },
+          {
+            concepto: "Pago educadores",
+            total: pagoEducadoresTotal,
+            detalle: `${educadores} x ${formatCurrency(pagoEducadores)}`,
+          },
+          {
+            concepto: "Pago preeducadores",
+            total: pagoPreeducadoresTotal,
+            detalle: `${preeducadores} x ${formatCurrency(pagoPreeducadores)}`,
+          },
+          {
+            concepto: "Pago otros",
+            total: pagoOtrosTotal,
+            detalle: `${otros} x ${formatCurrency(pagoOtros)}`,
+          },
+          {
+            concepto: "Total grupo",
+            total: totalGrupo,
+            detalle: `${totalPersonas} personas`,
+          },
+        ];
+
+        const summaryBody = document.getElementById("summaryBody");
+        summaryBody.innerHTML = "";
+        summary.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.concepto}</td>
+            <td style="text-align: right">${formatCurrency(item.total)}</td>
+            <td style="text-align: right">${item.detalle}</td>
+          `;
+          summaryBody.appendChild(row);
+        });
+      }
+
+      const themeToggle = document.getElementById("themeToggle");
+
+      function setTheme(theme) {
+        if (theme === "dark") {
+          document.body.dataset.theme = "dark";
+          themeToggle.textContent = "Modo claro";
+        } else {
+          document.body.removeAttribute("data-theme");
+          themeToggle.textContent = "Modo oscuro";
+        }
+        localStorage.setItem("excursionTheme", theme);
+      }
+
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem("excursionTheme");
+        const preferredTheme = window.matchMedia?.(
+          "(prefers-color-scheme: dark)",
+        ).matches
+          ? "dark"
+          : "light";
+        setTheme(savedTheme || preferredTheme);
+      }
+
+      function toggleTheme() {
+        const current =
+          document.body.dataset.theme === "dark" ? "light" : "dark";
+        setTheme(current);
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", toggleTheme);
+      }
+
+      renderActivities();
+      initializeTheme();
+      calculate();
+    </script>
+  </body>
+</html>
