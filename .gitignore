@@ -6,3 +6,7 @@ npm-debug.log*
 
 # Variables de entorno (seguridad)
 .env
+
+# Archivos de configuración local
+dist/
+build/
