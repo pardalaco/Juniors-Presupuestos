@@ -14,7 +14,13 @@ export function generatePDF() {
   doc.setTextColor(255, 255, 255); // Texto blanco
   doc.setFontSize(24);
   doc.setFont("helvetica", "bold");
-  doc.text("Presupuesto Campamento", 105, 20, { align: "center" });
+  const nombreCampamento = document
+    .getElementById("nombreCampamento")
+    .value.trim();
+  const titulo = nombreCampamento
+    ? `Presupuesto ${nombreCampamento}`
+    : "Presupuesto Campamento";
+  doc.text(titulo, 105, 20, { align: "center" });
 
   // Fecha
   doc.setFontSize(10);
