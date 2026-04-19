@@ -4,7 +4,10 @@
   "description": "Esta colección de páginas HTML está diseñada para ayudar a calcular presupuestos de actividades escolares: campamentos y excursiones.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
