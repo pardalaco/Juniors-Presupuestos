@@ -294,6 +294,13 @@
           </div>
         </div>
 
+        <div class="section-actions">
+          <button id="generatePDF" class="icon-button" type="button">
+            <span class="icon">📄</span>
+            <span>Generar PDF</span>
+          </button>
+        </div>
+
         <table class="summary-table">
           <thead>
             <tr>
@@ -308,7 +315,18 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
+      import { generatePDF } from "./generateCampamentoPDF.js";
+
+      // Llamar a calculate al cargar la página
+      calculate();
+
+      // Agregar event listener al botón de PDF
+      document
+        .getElementById("generatePDF")
+        .addEventListener("click", generatePDF);
+
+      // El resto del código JavaScript existente
       function calculate() {
         const dias = parseInt(document.getElementById("dias").value);
         const ninos = parseInt(document.getElementById("ninos").value);
@@ -478,8 +496,6 @@
         document.getElementById("summaryBody").innerHTML = html;
       }
 
-      const themeToggle = document.getElementById("themeToggle");
-
       function setTheme(theme) {
         const themeLabel = themeToggle?.querySelector("span:last-child");
 
@@ -514,7 +530,6 @@
       }
 
       initializeTheme();
-      calculate();
     </script>
   </body>
 </html>
