@@ -39,7 +39,7 @@ export function generatePDF() {
     }
 
     doc.setTextColor(...primaryColor);
-    doc.setFontSize(16);
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.text(title, xPosition, yPosition);
     yPosition += 10;
@@ -108,7 +108,7 @@ export function generatePDF() {
 
   // Resultados en tabla (columna derecha)
   doc.setTextColor(...primaryColor);
-  doc.setFontSize(16);
+  doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
   doc.text("Resultados del Cálculo", xPosition, yPosition);
   yPosition += 10;
@@ -157,6 +157,115 @@ export function generatePDF() {
   });
 
   // Pie de página
+  doc.setFontSize(10);
+  doc.setTextColor(...secondaryColor);
+  doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
+    align: "center",
+  });
+
+  // Segunda página: Detalles de cálculos
+  doc.addPage();
+
+  let yPos = 20;
+  const xPos = 20;
+
+  // Título de la sección
+  doc.setTextColor(...primaryColor);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("Detalles de Cálculos", 105, yPos, { align: "center" });
+  yPos += 5;
+
+  doc.setDrawColor(...primaryColor);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 15;
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(0, 0, 0);
+
+  // Extraer valores
+  const dias = parseInt(document.getElementById("dias").value);
+  const ninos = parseInt(document.getElementById("ninos").value);
+  const educadores = parseInt(document.getElementById("educadores").value);
+  const preeducadores = parseInt(
+    document.getElementById("preeducadores").value,
+  );
+  const cocina = parseInt(document.getElementById("cocina").value);
+  const costeNoche = parseFloat(document.getElementById("costeNoche").value);
+  const precioComida = parseFloat(
+    document.getElementById("precioComida").value,
+  );
+  const margen = parseFloat(document.getElementById("margen").value);
+  const autobus = parseFloat(document.getElementById("autobus").value);
+  const material = parseFloat(document.getElementById("material").value);
+  const furgoneta = parseFloat(document.getElementById("furgoneta").value);
+  const gasolina = parseFloat(document.getElementById("gasolina").value);
+  const precioEducador = parseFloat(
+    document.getElementById("precioEducador").value,
+  );
+  const precioPreeducador = parseFloat(
+    document.getElementById("precioPreeducador").value,
+  );
+  const precioCocina = parseFloat(
+    document.getElementById("precioCocina").value,
+  );
+
+  const costoPersonaDia = costeNoche + precioComida;
+  const estanciaComidaTotalNiño = costoPersonaDia * dias;
+  const costAutobus = autobus / ninos;
+  const costMaterial = material / ninos;
+  const costFurgoneta = (furgoneta + gasolina) / ninos;
+  const costeRealPersonal = costoPersonaDia * dias;
+  const subvencionEducadores =
+    (costeRealPersonal - precioEducador) * educadores;
+  const subvencionPreeducadores =
+    (costeRealPersonal - precioPreeducador) * preeducadores;
+  const subvencionCocina = (costeRealPersonal - precioCocina) * cocina;
+  const costoPersonalAsumidoNinos =
+    (subvencionEducadores + subvencionPreeducadores + subvencionCocina) / ninos;
+  const precioTotal =
+    Math.round(
+      (estanciaComidaTotalNiño +
+        costAutobus +
+        costMaterial +
+        costFurgoneta +
+        costoPersonalAsumidoNinos +
+        margen) *
+        100,
+    ) / 100;
+
+  const calcLines = [
+    `Coste por persona/día: ${costeNoche}€ (noche) + ${precioComida}€ (comida) = ${costoPersonaDia}€`,
+    `Estancia + comida total por niño: ${costoPersonaDia}€ x ${dias} días = ${estanciaComidaTotalNiño}€`,
+    `Autobús por niño: ${autobus}€ / ${ninos} niños = ${costAutobus.toFixed(2)}€`,
+    `Material por niño: ${material}€ / ${ninos} niños = ${costMaterial.toFixed(2)}€`,
+    `Furgoneta por niño: (${furgoneta}€ + ${gasolina}€) / ${ninos} niños = ${costFurgoneta.toFixed(2)}€`,
+    `Coste real personal por persona: ${costoPersonaDia}€ x ${dias} días = ${costeRealPersonal}€`,
+    `Subvención educadores: (${costeRealPersonal}€ - ${precioEducador}€) x ${educadores} = ${subvencionEducadores.toFixed(2)}€`,
+    `Subvención preeducadores: (${costeRealPersonal}€ - ${precioPreeducador}€) x ${preeducadores} = ${subvencionPreeducadores.toFixed(2)}€`,
+    `Subvención cocina: (${costeRealPersonal}€ - ${precioCocina}€) x ${cocina} = ${subvencionCocina.toFixed(2)}€`,
+    `Coste personal asumido por niños: (${subvencionEducadores.toFixed(2)} + ${subvencionPreeducadores.toFixed(2)} + ${subvencionCocina.toFixed(2)}) / ${ninos} = ${costoPersonalAsumidoNinos.toFixed(2)}€`,
+    `Precio total por niño: ${estanciaComidaTotalNiño}€ + ${costAutobus.toFixed(2)}€ + ${costMaterial.toFixed(2)}€ + ${costFurgoneta.toFixed(2)}€ + ${costoPersonalAsumidoNinos.toFixed(2)}€ + ${margen}€ = ${precioTotal}€`,
+  ];
+
+  calcLines.forEach((line) => {
+    doc.text(line, xPos, yPos);
+    yPos += 10;
+    if (yPos > 270) {
+      doc.addPage();
+      // Repetir encabezado en nueva página
+      doc.setFillColor(...primaryColor);
+      doc.rect(0, 0, 210, 30, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text(titulo, 105, 20, { align: "center" });
+      yPos = 50;
+    }
+  });
+
+  // Pie de página en segunda página
   doc.setFontSize(10);
   doc.setTextColor(...secondaryColor);
   doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
