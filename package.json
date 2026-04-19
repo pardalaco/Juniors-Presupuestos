@@ -1,0 +1,27 @@
+{
+  "name": "juniors-presupuestos",
+  "version": "1.0.0",
+  "description": "Esta colección de páginas HTML está diseñada para ayudar a calcular presupuestos de actividades escolares: campamentos y excursiones.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pardalaco/Juniors-Presupuestos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pardalaco/Juniors-Presupuestos/issues"
+  },
+  "homepage": "https://github.com/pardalaco/Juniors-Presupuestos#readme",
+  "dependencies": {
+    "jspdf": "^4.2.1"
+  },
+  "devDependencies": {
+    "vite": "^8.0.8"
+  }
+}
