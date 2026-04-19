@@ -335,13 +335,13 @@
     <script type="module">
       import { generatePDF } from "./generateCampamentoPDF.js";
 
-      // Llamar a calculate al cargar la página
-      calculate();
-
       // Agregar event listener al botón de PDF
       document
         .getElementById("generatePDF")
         .addEventListener("click", generatePDF);
+    </script>
+    <script>
+
 
       // El resto del código JavaScript existente
       function calculate() {
@@ -550,6 +550,7 @@
       }
 
       initializeTheme();
+      calculate();
     </script>
   </body>
 </html>
