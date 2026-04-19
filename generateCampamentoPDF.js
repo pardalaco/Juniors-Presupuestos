@@ -3,135 +3,159 @@ import { jsPDF } from "jspdf";
 export function generatePDF() {
   const doc = new jsPDF();
 
-  // Título
-  doc.setFontSize(20);
-  doc.text("Presupuesto Campamento", 20, 30);
+  // Configurar colores y fuentes
+  const primaryColor = [0, 102, 204]; // Azul
+  const secondaryColor = [100, 100, 100]; // Gris
+  const accentColor = [255, 87, 34]; // Naranja rojizo
 
-  // Configuración General
-  doc.setFontSize(16);
-  doc.text("Configuración General", 20, 50);
-  doc.setFontSize(12);
-  doc.text(`Número de días: ${document.getElementById("dias").value}`, 20, 65);
-  doc.text(
-    `Número de niños: ${document.getElementById("ninos").value}`,
-    20,
-    75,
-  );
-  doc.text(
-    `Coste noche/persona: ${document.getElementById("costeNoche").value}€`,
-    20,
-    85,
-  );
-  doc.text(
-    `Precio comida/persona: ${document.getElementById("precioComida").value}€`,
-    20,
-    95,
-  );
-  doc.text(
-    `Margen por niño: ${document.getElementById("margen").value}€`,
-    20,
-    105,
-  );
+  // Encabezado
+  doc.setFillColor(...primaryColor);
+  doc.rect(0, 0, 210, 30, "F"); // Rectángulo azul en la parte superior
+  doc.setTextColor(255, 255, 255); // Texto blanco
+  doc.setFontSize(24);
+  doc.setFont("helvetica", "bold");
+  doc.text("Presupuesto Campamento", 105, 20, { align: "center" });
 
-  // Personal
-  doc.setFontSize(16);
-  doc.text("Personal del Campamento", 20, 125);
-  doc.setFontSize(12);
-  doc.text(
-    `Educadores: ${document.getElementById("educadores").value} (Pagan: ${document.getElementById("precioEducador").value}€)`,
-    20,
-    140,
-  );
-  doc.text(
-    `Preeducadores: ${document.getElementById("preeducadores").value} (Pagan: ${document.getElementById("precioPreeducador").value}€)`,
-    20,
-    150,
-  );
-  doc.text(
-    `Cocina y otros: ${document.getElementById("cocina").value} (Pagan: ${document.getElementById("precioCocina").value}€)`,
-    20,
-    160,
-  );
+  // Fecha
+  doc.setFontSize(10);
+  doc.setTextColor(...secondaryColor);
+  const today = new Date().toLocaleDateString("es-ES");
+  doc.text(`Generado el: ${today}`, 20, 40);
 
-  // Costes de Transporte y Material
-  doc.setFontSize(16);
-  doc.text("Costes de Transporte y Material", 20, 180);
-  doc.setFontSize(12);
-  doc.text(
-    `Precio autobús: ${document.getElementById("autobus").value}€`,
-    20,
-    195,
-  );
-  doc.text(
-    `Presupuesto Material: ${document.getElementById("material").value}€`,
-    20,
-    205,
-  );
-  doc.text(
-    `Presupuesto Furgoneta: ${document.getElementById("furgoneta").value}€`,
-    20,
-    215,
-  );
-  doc.text(
-    `Gasolina Campamento: ${document.getElementById("gasolina").value}€`,
-    20,
-    225,
-  );
+  let yPosition = 60;
+  let xPosition = 20; // Columna izquierda
 
-  // Resultados
+  // Función auxiliar para secciones
+  function addSection(title, items, newColumn = false) {
+    if (newColumn) {
+      xPosition = 110; // Cambiar a columna derecha
+      yPosition = 60; // Resetear yPosition para la nueva columna
+    }
+
+    doc.setTextColor(...primaryColor);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, xPosition, yPosition);
+    yPosition += 10;
+
+    doc.setDrawColor(...primaryColor);
+    doc.line(xPosition, yPosition, xPosition + 80, yPosition); // Línea horizontal más corta
+    yPosition += 10;
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11); // Fuente un poco más pequeña para ahorrar espacio
+    doc.setFont("helvetica", "normal");
+
+    items.forEach(([label, value]) => {
+      doc.setTextColor(0, 0, 0);
+      doc.text(label + ":", xPosition + 5, yPosition);
+      doc.setTextColor(...accentColor);
+      doc.text(value, xPosition + 75, yPosition, { align: "right" });
+      yPosition += 7; // Espaciado más pequeño
+    });
+
+    yPosition += 10; // Espacio entre secciones
+  }
+
+  // Configuración General (columna izquierda)
+  addSection("Configuración General", [
+    ["Número de días", document.getElementById("dias").value],
+    ["Número de niños", document.getElementById("ninos").value],
+    ["Coste noche/persona", document.getElementById("costeNoche").value + "€"],
+    [
+      "Precio comida/persona",
+      document.getElementById("precioComida").value + "€",
+    ],
+    ["Margen por niño", document.getElementById("margen").value + "€"],
+  ]);
+
+  // Personal (columna izquierda)
+  addSection("Personal del Campamento", [
+    [
+      "Educadores",
+      `${document.getElementById("educadores").value} (Pagan: ${document.getElementById("precioEducador").value}€)`,
+    ],
+    [
+      "Preeducadores",
+      `${document.getElementById("preeducadores").value} (Pagan: ${document.getElementById("precioPreeducador").value}€)`,
+    ],
+    [
+      "Cocina y otros",
+      `${document.getElementById("cocina").value} (Pagan: ${document.getElementById("precioCocina").value}€)`,
+    ],
+  ]);
+
+  // Costes de Transporte y Material (columna derecha)
+  addSection(
+    "Costes de Transporte y Material",
+    [
+      ["Precio autobús", document.getElementById("autobus").value + "€"],
+      ["Presupuesto Material", document.getElementById("material").value + "€"],
+      [
+        "Presupuesto Furgoneta",
+        document.getElementById("furgoneta").value + "€",
+      ],
+      ["Gasolina Campamento", document.getElementById("gasolina").value + "€"],
+    ],
+    true,
+  ); // newColumn = true
+
+  // Resultados en tabla (columna derecha)
+  doc.setTextColor(...primaryColor);
   doc.setFontSize(16);
-  doc.text("Resultados del Cálculo", 20, 245);
-  doc.setFontSize(12);
-  doc.text(
-    `Coste persona/día: ${document.getElementById("costoPersonaDia").textContent}`,
-    20,
-    260,
-  );
-  doc.text(
-    `Estancia + comida total / persona: ${document.getElementById("estanciaComida").textContent}`,
-    20,
-    270,
-  );
-  doc.text(
-    `Autobús/niño: ${document.getElementById("costAutobus").textContent}`,
-    20,
-    280,
-  );
-  doc.text(
-    `Material/niño: ${document.getElementById("costMaterial").textContent}`,
-    20,
-    290,
-  );
-  doc.text(
-    `Furgoneta/niño: ${document.getElementById("costFurgoneta").textContent}`,
-    20,
-    300,
-  );
-  doc.text(
-    `Coste personal: ${document.getElementById("costEducadores").textContent}`,
-    20,
-    310,
-  );
-  doc.text(
-    `Margen: ${document.getElementById("costMargen").textContent}`,
-    20,
-    320,
-  );
-  doc.text(
-    `Total personas: ${document.getElementById("totalPersonas").textContent}`,
-    20,
-    330,
-  );
-  doc.text(
-    `Precio total por niño: ${document.getElementById("precioTotal").textContent}`,
-    20,
-    340,
-  );
-  doc.text(
-    `Presupuesto Total del Campamento: ${document.getElementById("presupuestoTotal").textContent}`,
-    20,
-    350,
-  );
+  doc.setFont("helvetica", "bold");
+  doc.text("Resultados del Cálculo", xPosition, yPosition);
+  yPosition += 10;
+
+  doc.setDrawColor(...primaryColor);
+  doc.line(xPosition, yPosition, xPosition + 80, yPosition);
+  yPosition += 10;
+
+  // Crear tabla simple
+  const results = [
+    [
+      "Coste persona/día",
+      document.getElementById("costoPersonaDia").textContent,
+    ],
+    [
+      "Estancia + comida total / persona",
+      document.getElementById("estanciaComida").textContent,
+    ],
+    ["Autobús/niño", document.getElementById("costAutobus").textContent],
+    ["Material/niño", document.getElementById("costMaterial").textContent],
+    ["Furgoneta/niño", document.getElementById("costFurgoneta").textContent],
+    [
+      "Coste personal/niño",
+      document.getElementById("costEducadores").textContent,
+    ],
+    ["Margen", document.getElementById("costMargen").textContent],
+    ["Total personas", document.getElementById("totalPersonas").textContent],
+    [
+      "Precio total por niño",
+      document.getElementById("precioTotal").textContent,
+    ],
+    [
+      "Presupuesto Total",
+      document.getElementById("presupuestoTotal").textContent,
+    ],
+  ];
+
+  doc.setFontSize(11); // Fuente más pequeña
+  doc.setFont("helvetica", "normal");
+  results.forEach(([label, value]) => {
+    doc.setTextColor(0, 0, 0);
+    doc.text(label + ":", xPosition + 5, yPosition);
+    doc.setTextColor(...accentColor);
+    doc.text(value, xPosition + 75, yPosition, { align: "right" });
+    yPosition += 7; // Espaciado más pequeño
+  });
+
+  // Pie de página
+  doc.setFontSize(10);
+  doc.setTextColor(...secondaryColor);
+  doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
+    align: "center",
+  });
 
   // Guardar el PDF
   doc.save("presupuesto_campamento.pdf");
