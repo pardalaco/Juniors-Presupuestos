@@ -29,10 +29,36 @@
             <span class="icon">🌓</span>
             <span>Modo oscuro</span>
           </button>
+          <button
+            id="generatePDF"
+            class="icon-button pdf-button"
+            type="button"
+            style="
+              background-color: #0066cc;
+              color: white;
+              transition: background-color 0.3s;
+            "
+            onmouseover="this.style.backgroundColor = '#004499'"
+            onmouseout="this.style.backgroundColor = '#0066CC'"
+          >
+            <span class="icon">📄</span>
+            <span>Generar PDF</span>
+          </button>
         </div>
       </div>
 
       <div class="section">
+        <div class="section-title">Configuración General</div>
+
+        <div class="input-group" style="margin-bottom: 1.5rem">
+          <label>Nombre de la Excursión</label>
+          <input
+            type="text"
+            id="nombreExcursion"
+            placeholder="Ej: Excursión al Museo"
+          />
+        </div>
+
         <div class="section-title">Participantes y pagos del personal</div>
         <div class="participant-pay-grid">
           <div class="participant-cell">
@@ -189,7 +215,15 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
+      import { generatePDF } from "./generateExcursionesPDF.js";
+
+      // Agregar event listener al botón de PDF
+      document
+        .getElementById("generatePDF")
+        .addEventListener("click", generatePDF);
+
+      // El resto del código JavaScript existente
       const activities = [
         {
           name: "Transporte",
@@ -202,6 +236,9 @@
           mode: "porPersona",
         },
       ];
+
+      // Exponer activities para el PDF
+      window.activities = activities;
 
       function formatCurrency(value) {
         return Math.round(value * 100) / 100 + "€";
