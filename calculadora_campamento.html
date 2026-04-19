@@ -513,6 +513,9 @@
         document.getElementById("summaryBody").innerHTML = html;
       }
 
+      // Exponer la función calculate al scope global para que funcione con onchange
+      window.calculate = calculate;
+
       function setTheme(theme) {
         const themeLabel = themeToggle?.querySelector("span:last-child");
 
