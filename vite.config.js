@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "./", // Esto asegura que las rutas sean relativas y funcionen en GH Pages
+  // Es mejor usar el nombre exacto del repo para evitar fallos con las rutas de assets
+  base: "/Juniors-Presupuestos/", 
 });
