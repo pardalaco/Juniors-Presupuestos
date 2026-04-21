@@ -20,6 +20,50 @@ Esta colección de páginas HTML está diseñada para ayudar a calcular presupue
 
 > Nota: estos archivos son páginas estáticas, no requieren servidor. Basta con abrirlos en el navegador.
 
+## Despliegue de la aplicación
+
+Esta aplicación es una colección de páginas web estáticas que pueden desplegarse en cualquier servidor web o plataforma de hosting estático. A continuación, se detallan las opciones más comunes:
+
+### Opción 1: Despliegue local
+
+Para desarrollo local:
+
+1. Instala las dependencias: `npm install`
+2. Ejecuta el servidor de desarrollo: `npm run dev`
+3. Abre `http://localhost:5173` en tu navegador
+
+### Opción 2: Build para producción
+
+Para generar los archivos optimizados para producción:
+
+1. Ejecuta: `npm run build`
+2. Los archivos se generarán en la carpeta `dist/`
+3. Sirve los archivos de la carpeta `dist/` en cualquier servidor web estático
+
+### Opción 3: Despliegue en GitHub Pages
+
+Si tienes el repositorio en GitHub:
+
+1. Asegúrate de que el repositorio esté público o configura GitHub Pages para repositorios privados
+2. Ejecuta: `npm run deploy`
+3. Esto construirá la aplicación y la desplegará automáticamente en GitHub Pages
+4. La aplicación estará disponible en `https://tu-usuario.github.io/Juniors-Presupuestos/`
+
+### Otras plataformas de despliegue
+
+Puedes desplegar fácilmente en:
+
+- **Netlify**: Conecta tu repositorio y configura el directorio de build como `dist`
+- **Vercel**: Similar a Netlify, conecta el repo y especifica `npm run build`
+- **Surge**: Ejecuta `npm run build` y luego `surge dist/`
+- **Firebase Hosting**: Usa `firebase deploy` después de configurar el proyecto
+
+### Requisitos del servidor
+
+- Soporte para archivos HTML, CSS y JavaScript
+- No requiere base de datos ni backend
+- Funciona con HTTPS (recomendado para producción)
+
 ## Calculadora de Excursiones
 
 Características principales:
@@ -77,7 +121,46 @@ Puedes editar directamente cualquiera de los archivos HTML para:
 - ajustar etiquetas y textos
 - adaptar las fórmulas a tus necesidades
 
-## Recomendaciones
+## Despliegue de la aplicación
 
-- Para trabajar localmente, abre `index.html` en el navegador.
-- Si añades nuevas páginas o herramientas, actualiza `index.html` para mantener la navegación centralizada.
+Esta aplicación es una colección de páginas web estáticas que pueden desplegarse en cualquier servidor web o plataforma de hosting estático. A continuación, se detallan las opciones más comunes:
+
+### Opción 1: Despliegue local
+
+Para desarrollo local:
+
+1. Instala las dependencias: `npm install`
+2. Ejecuta el servidor de desarrollo: `npm run dev`
+3. Abre `http://localhost:5173` en tu navegador
+
+### Opción 2: Build para producción
+
+Para generar los archivos optimizados para producción:
+
+1. Ejecuta: `npm run build`
+2. Los archivos se generarán en la carpeta `dist/`
+3. Sirve los archivos de la carpeta `dist/` en cualquier servidor web estático
+
+### Opción 3: Despliegue en GitHub Pages
+
+Si tienes el repositorio en GitHub:
+
+1. Asegúrate de que el repositorio esté público o configura GitHub Pages para repositorios privados
+2. Ejecuta: `npm run deploy`
+3. Esto construirá la aplicación y la desplegará automáticamente en GitHub Pages
+4. La aplicación estará disponible en `https://tu-usuario.github.io/Juniors-Presupuestos/`
+
+### Otras plataformas de despliegue
+
+Puedes desplegar fácilmente en:
+
+- **Netlify**: Conecta tu repositorio y configura el directorio de build como `dist`
+- **Vercel**: Similar a Netlify, conecta el repo y especifica `npm run build`
+- **Surge**: Ejecuta `npm run build` y luego `surge dist/`
+- **Firebase Hosting**: Usa `firebase deploy` después de configurar el proyecto
+
+### Requisitos del servidor
+
+- Soporte para archivos HTML, CSS y JavaScript
+- No requiere base de datos ni backend
+- Funciona con HTTPS (recomendado para producción)
