@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Excursiones</title>
+    <script type="module" crossorigin src="/Juniors-Presupuestos/assets/excursiones-DvY8uto6.js"></script>
+    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/chunk-C_Lf2zpa.js">
+    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/typeof-v3x6qlpQ.js">
+    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/jspdf.es.min-CA8_PzSQ.js">
+    <link rel="stylesheet" crossorigin href="/Juniors-Presupuestos/assets/styles-D1gjeMxM.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <div class="page-title">
+          <h2>Calculadora de Excursiones</h2>
+          <p>
+            Ajusta niños, gastos, actividades y pagos del personal para ver el
+            precio final.
+          </p>
+        </div>
+        <div class="header-actions">
+          <a href="index.html" class="icon-button">
+            <span class="icon">🏠</span>
+            <span>Inicio</span>
+          </a>
+          <button
+            id="themeToggle"
+            class="icon-button theme-toggle"
+            type="button"
+          >
+            <span class="icon">🌓</span>
+            <span>Modo oscuro</span>
+          </button>
+          <button
+            id="generatePDF"
+            class="icon-button pdf-button"
+            type="button"
+            style="
+              background-color: #0066cc;
+              color: white;
+              transition: background-color 0.3s;
+            "
+            onmouseover="this.style.backgroundColor = '#004499'"
+            onmouseout="this.style.backgroundColor = '#0066CC'"
+          >
+            <span class="icon">📄</span>
+            <span>Generar PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Configuración General</div>
+
+        <div class="input-group" style="margin-bottom: 1.5rem">
+          <label>Nombre de la Excursión</label>
+          <input
+            type="text"
+            id="nombreExcursion"
+            placeholder="Ej: Excursión al Museo"
+          />
+        </div>
+
+        <div class="section-title">Participantes y pagos del personal</div>
+        <div class="participant-pay-grid">
+          <div class="participant-cell">
+            <label>Número de niños</label>
+            <input
+              type="number"
+              id="ninos"
+              value="40"
+              min="1"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell"></div>
+
+          <div class="participant-cell">
+            <label>Educadores</label>
+            <input
+              type="number"
+              id="educadores"
+              value="12"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/educador</label>
+            <input
+              type="number"
+              id="pagoEducadores"
+              value="0"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+
+          <div class="participant-cell">
+            <label>Preeducadores</label>
+            <input
+              type="number"
+              id="preeducadores"
+              value="0"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/preeducador</label>
+            <input
+              type="number"
+              id="pagoPreeducadores"
+              value="0"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+
+          <div class="participant-cell">
+            <label>Otros</label>
+            <input
+              type="number"
+              id="otros"
+              value="0"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+          <div class="payment-cell">
+            <label>Pago/otros</label>
+            <input
+              type="number"
+              id="pagoOtros"
+              value="0"
+              min="0"
+              class="rol-input"
+              onchange="calculate()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Gastos y actividades</div>
+        <p
+          style="
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+          "
+        >
+          Añade transporte como gasto junto a otras actividades y servicios.
+        </p>
+        <table class="activity-list">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Modo</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="activityBody"></tbody>
+        </table>
+        <div class="activity-actions">
+          <button
+            class="button-secondary"
+            type="button"
+            onclick="addActivity()"
+          >
+            Añadir gasto/actividad
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Resultados</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Coste servicios</div>
+            <div class="result-value" id="gastosTotal">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Aporte personal</div>
+            <div class="result-value" id="aportePersonal">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total grupo</div>
+            <div class="result-value" id="totalGrupo">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Precio por niño</div>
+            <div class="result-value highlight" id="precioPorNino">0€</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total personas</div>
+            <div class="result-value" id="totalPersonas">0</div>
+          </div>
+        </div>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th style="text-align: right">Total (€)</th>
+              <th style="text-align: right">Detalles</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <script>
+      // El resto del código JavaScript existente
+      const activities = [
+        {
+          name: "Transporte",
+          price: 450,
+          mode: "total",
+        },
+        {
+          name: "Museo",
+          price: 5,
+          mode: "porPersona",
+        },
+      ];
+
+      // Exponer activities para el PDF
+      window.activities = activities;
+
+      function formatCurrency(value) {
+        return Math.round(value * 100) / 100 + "€";
+      }
+
+      function addActivity() {
+        activities.push({ name: "Nueva actividad", price: 0, mode: "total" });
+        renderActivities();
+        calculate();
+      }
+
+      function removeActivity(index) {
+        activities.splice(index, 1);
+        renderActivities();
+        calculate();
+      }
+
+      function updateActivity(index, field, value) {
+        if (field === "name") {
+          activities[index].name = value;
+        } else if (field === "price") {
+          activities[index].price = parseFloat(value) || 0;
+        } else if (field === "mode") {
+          activities[index].mode = value;
+        }
+        calculate();
+      }
+
+      function renderActivities() {
+        const body = document.getElementById("activityBody");
+        body.innerHTML = "";
+        activities.forEach((activity, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td><input type="text" value="${activity.name}" class="rol-input" onchange="updateActivity(${index}, 'name', this.value)" /></td>
+            <td><input type="number" min="0" step="0.5" value="${activity.price}" class="rol-input" onchange="updateActivity(${index}, 'price', this.value)" /></td>
+            <td>
+              <select onchange="updateActivity(${index}, 'mode', this.value)">
+                <option value="total" ${activity.mode === "total" ? "selected" : ""}>Total</option>
+                <option value="porPersona" ${activity.mode === "porPersona" ? "selected" : ""}>Por persona</option>
+                <option value="porNino" ${activity.mode === "porNino" ? "selected" : ""}>Por niño</option>
+              </select>
+            </td>
+            <td><button type="button" class="button-secondary" onclick="removeActivity(${index})">Eliminar</button></td>
+          `;
+          body.appendChild(row);
+        });
+      }
+
+      function calculate() {
+        const ninos = parseInt(document.getElementById("ninos").value) || 0;
+        const educadores =
+          parseInt(document.getElementById("educadores").value) || 0;
+        const preeducadores =
+          parseInt(document.getElementById("preeducadores").value) || 0;
+        const otros = parseInt(document.getElementById("otros").value) || 0;
+
+        const pagoEducadores =
+          parseFloat(document.getElementById("pagoEducadores").value) || 0;
+        const pagoPreeducadores =
+          parseFloat(document.getElementById("pagoPreeducadores").value) || 0;
+        const pagoOtros =
+          parseFloat(document.getElementById("pagoOtros").value) || 0;
+        const pagoEducadoresTotal = pagoEducadores * educadores;
+        const pagoPreeducadoresTotal = pagoPreeducadores * preeducadores;
+        const pagoOtrosTotal = pagoOtros * otros;
+        const totalPersonas = ninos + educadores + preeducadores + otros;
+
+        const gastosTotal = activities.reduce((sum, activity) => {
+          let base = activity.price;
+          if (activity.mode === "porPersona") {
+            base = activity.price * totalPersonas;
+          } else if (activity.mode === "porNino") {
+            base = activity.price * ninos;
+          }
+          return sum + base;
+        }, 0);
+        const aportePersonal =
+          pagoEducadoresTotal + pagoPreeducadoresTotal + pagoOtrosTotal;
+        const totalGrupo = gastosTotal;
+        const costePorNino =
+          ninos > 0 ? Math.max(0, totalGrupo - aportePersonal) / ninos : 0;
+
+        document.getElementById("gastosTotal").textContent =
+          formatCurrency(gastosTotal);
+        document.getElementById("aportePersonal").textContent =
+          formatCurrency(aportePersonal);
+        document.getElementById("totalGrupo").textContent =
+          formatCurrency(totalGrupo);
+        document.getElementById("precioPorNino").textContent =
+          formatCurrency(costePorNino);
+        document.getElementById("totalPersonas").textContent = totalPersonas;
+
+        const summary = [
+          {
+            concepto: "Gastos y actividades",
+            total: gastosTotal,
+            detalle: activities.length + " gasto(s)",
+          },
+          {
+            concepto: "Pago educadores",
+            total: pagoEducadoresTotal,
+            detalle: `${educadores} x ${formatCurrency(pagoEducadores)}`,
+          },
+          {
+            concepto: "Pago preeducadores",
+            total: pagoPreeducadoresTotal,
+            detalle: `${preeducadores} x ${formatCurrency(pagoPreeducadores)}`,
+          },
+          {
+            concepto: "Pago otros",
+            total: pagoOtrosTotal,
+            detalle: `${otros} x ${formatCurrency(pagoOtros)}`,
+          },
+          {
+            concepto: "Total grupo",
+            total: totalGrupo,
+            detalle: `${totalPersonas} personas`,
+          },
+        ];
+
+        const summaryBody = document.getElementById("summaryBody");
+        summaryBody.innerHTML = "";
+        summary.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.concepto}</td>
+            <td style="text-align: right">${formatCurrency(item.total)}</td>
+            <td style="text-align: right">${item.detalle}</td>
+          `;
+          summaryBody.appendChild(row);
+        });
+      }
+
+      const themeToggle = document.getElementById("themeToggle");
+
+      function setTheme(theme) {
+        const themeLabel = themeToggle?.querySelector("span:last-child");
+
+        if (theme === "dark") {
+          document.body.dataset.theme = "dark";
+          if (themeLabel) themeLabel.textContent = "Modo claro";
+        } else {
+          document.body.removeAttribute("data-theme");
+          if (themeLabel) themeLabel.textContent = "Modo oscuro";
+        }
+        localStorage.setItem("siteTheme", theme);
+      }
+
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem("siteTheme");
+        const preferredTheme = window.matchMedia?.(
+          "(prefers-color-scheme: dark)",
+        ).matches
+          ? "dark"
+          : "light";
+        setTheme(savedTheme || preferredTheme);
+      }
+
+      function toggleTheme() {
+        const current =
+          document.body.dataset.theme === "dark" ? "light" : "dark";
+        setTheme(current);
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", toggleTheme);
+      }
+
+      renderActivities();
+      initializeTheme();
+      calculate();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+# Dependencias (NUNCA subir esto)
+node_modules/
+
+# Logs
+npm-debug.log*
+
+# Variables de entorno (seguridad)
+.env
+
+# Archivos de configuración local
+dist/
+build/
