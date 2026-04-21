@@ -275,3 +275,8 @@ export function generatePDF() {
   // Guardar el PDF
   doc.save("presupuesto_campamento.pdf");
 }
+
+const btn = document.getElementById("generatePDF");
+if (btn) {
+  btn.addEventListener("click", generatePDF);
+}

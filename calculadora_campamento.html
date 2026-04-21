@@ -332,17 +332,9 @@
       </div>
     </div>
 
-    <script type="module">
-      import { generatePDF } from "./generateCampamentoPDF.js";
+    <script type="module" src="generateCampamentoPDF.js"></script>
 
-      // Agregar event listener al botón de PDF
-      document
-        .getElementById("generatePDF")
-        .addEventListener("click", generatePDF);
-    </script>
     <script>
-
-
       // El resto del código JavaScript existente
       function calculate() {
         const dias = parseInt(document.getElementById("dias").value);
