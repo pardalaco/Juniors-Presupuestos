@@ -2,8 +2,14 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  // Añadimos el nombre de tu proyecto como ruta base
+  // Mantenemos tu ruta base para GitHub Pages o similares
   base: "/Juniors-Presupuestos/",
+
+  // Forzamos a Vite a que procese jspdf correctamente
+  optimizeDeps: {
+    include: ["jspdf"],
+  },
+
   build: {
     rollupOptions: {
       input: {
