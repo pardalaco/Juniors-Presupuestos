@@ -159,8 +159,22 @@ export function generatePDF() {
   // Pie de página
   doc.setFontSize(10);
   doc.setTextColor(...secondaryColor);
-  doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
-    align: "center",
+  const texto_footer = "Generado con Calculadora de Presupuestos Juniors";
+  const x = 105;
+  const y = 280;
+
+  // 1. Dibujamos el texto normalmente
+  doc.text(texto_footer, x, y, { align: "center" });
+
+  // 2. Calculamos el ancho del texto para definir el área del clic
+  // 'center' alinea respecto a X, así que restamos la mitad del ancho para el inicio
+  const textWidth = doc.getTextWidth(texto_footer);
+  const startX = x - textWidth / 2;
+
+  // 3. Añadimos el enlace sobre el área del texto
+  // Parámetros: x, y, ancho, alto, url
+  doc.link(startX, y - 5, textWidth, 10, {
+    url: "https://pardalaco.github.io/Juniors-Presupuestos/",
   });
 
   // Segunda página: Detalles de cálculos
@@ -268,8 +282,10 @@ export function generatePDF() {
   // Pie de página en segunda página
   doc.setFontSize(10);
   doc.setTextColor(...secondaryColor);
-  doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
-    align: "center",
+
+  doc.text(texto_footer, x, y, { align: "center" });
+  doc.link(startX, y - 5, textWidth, 10, {
+    url: "https://pardalaco.github.io/Juniors-Presupuestos/",
   });
 
   // Guardar el PDF
