@@ -126,8 +126,9 @@ export function generatePDF() {
       "Coste persona/día",
       document.getElementById("costoPersonaDia").textContent,
     ],
+    ["Estancia +", ""],
     [
-      "Estancia + comida total / persona",
+      "comida total / persona",
       document.getElementById("estanciaComida").textContent,
     ],
     ["Autobús/niño", document.getElementById("costAutobus").textContent],
@@ -186,6 +187,13 @@ export function generatePDF() {
       doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
 
       yPosition += 12; // Más espacio después
+    } else if (label === "Estancia +") {
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(label, xPosition + 5, yPosition);
+      doc.setTextColor(...accentColor);
+      yPosition += 7;
     } else {
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(11);
