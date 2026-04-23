@@ -17,6 +17,9 @@ export function generatePDF() {
   const nombreExcursion = document
     .getElementById("nombreExcursion")
     .value.trim();
+  const nombreArchivo = nombreExcursion
+    ? `presupuesto-${nombreExcursion.replace(/\s+/g, "_")}`
+    : "presupuesto-excursion";
   const titulo = nombreExcursion
     ? `Presupuesto ${nombreExcursion}`
     : "Presupuesto Excursión";
@@ -109,19 +112,57 @@ export function generatePDF() {
   const results = [
     ["Coste servicios", document.getElementById("gastosTotal").textContent],
     ["Aporte personal", document.getElementById("aportePersonal").textContent],
+    ["Total personas", document.getElementById("totalPersonas").textContent],
     ["Total grupo", document.getElementById("totalGrupo").textContent],
     ["Precio por niño", document.getElementById("precioPorNino").textContent],
-    ["Total personas", document.getElementById("totalPersonas").textContent],
   ];
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  results.forEach(([label, value]) => {
-    doc.setTextColor(0, 0, 0);
-    doc.text(label + ":", xPosition + 5, yPosition);
-    doc.setTextColor(...accentColor);
-    doc.text(value, xPosition + 75, yPosition, { align: "right" });
-    yPosition += 7;
+
+  results.forEach(([label, value], index) => {
+    // Resaltar precio por niño y total grupo con más tamaño y colores destacados
+    if (label === "Precio por niño") {
+      // Añadir espacio extra antes
+      yPosition += 5;
+
+      // Fondo azul más grande
+      doc.setFillColor(0, 102, 204); // Azul
+      doc.roundedRect(xPosition - 5, yPosition - 5, 90, 14, 2, 2, "F");
+
+      // Texto más grande y blanco
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(label + ":", xPosition + 5, yPosition + 3);
+      doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
+
+      yPosition += 12; // Más espacio después
+    } else if (label === "Total grupo") {
+      // Añadir espacio extra antes
+      yPosition += 5;
+
+      // Fondo verde más grande
+      doc.setFillColor(34, 139, 34); // Verde
+      doc.roundedRect(xPosition - 5, yPosition - 5, 90, 14, 2, 2, "F");
+
+      // Texto más grande y blanco
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(label + ":", xPosition + 5, yPosition + 3);
+      doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
+
+      yPosition += 12; // Más espacio después
+    } else {
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(label + ":", xPosition + 5, yPosition);
+      doc.setTextColor(...accentColor);
+      doc.text(value, xPosition + 75, yPosition, { align: "right" });
+      yPosition += 7;
+    }
   });
 
   // Pie de página
@@ -285,7 +326,7 @@ export function generatePDF() {
   });
 
   // Guardar el PDF
-  doc.save("presupuesto_excursion.pdf");
+  doc.save(nombreArchivo + ".pdf");
 }
 
 const btn = document.getElementById("generatePDF");
