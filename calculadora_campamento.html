@@ -323,8 +323,6 @@
             <tr>
               <th>Concepto</th>
               <th style="text-align: right">Coste Total (€)</th>
-              <th style="text-align: right">% Niños</th>
-              <th style="text-align: right">% Personal</th>
             </tr>
           </thead>
           <tbody id="summaryBody"></tbody>
@@ -404,6 +402,8 @@
               100,
           ) / 100;
 
+        const totalPersonas = ninos + educadores + preeducadores + cocina;
+
         document.getElementById("costoPersonaDia").textContent =
           Math.round(costoPersonaDia * 100) / 100 + "€";
         document.getElementById("estanciaComida").textContent =
@@ -418,8 +418,7 @@
           Math.round(costoPersonalAsumidoNinos * 100) / 100 + "€";
         document.getElementById("costMargen").textContent =
           Math.round(margen * 100) / 100 + "€";
-        document.getElementById("totalPersonas").textContent =
-          ninos + educadores + preeducadores + cocina;
+        document.getElementById("totalPersonas").textContent = totalPersonas;
         document.getElementById("precioTotal").textContent = precioTotal + "€";
 
         // Cálculo del presupuesto total del campamento (lo que pagan niños + lo que paga el personal)
@@ -446,50 +445,31 @@
           (precioPreeducador / costeRealPersonal) * 100;
         const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
 
+        const estanciaTotal = costeNoche * dias * totalPersonas;
+        const comidaTotal = precioComida * dias * totalPersonas;
+
         const summary = [
           {
-            concepto: "Estancia + Comida (Niños)",
-            total: Math.round(estanciaComidaTotalNiño * ninos * 100) / 100,
-            ninos: 100,
-            personal: 0,
+            concepto: "Estancia Total",
+            total: Math.round(estanciaTotal * 100) / 100,
           },
           {
-            concepto: "Transporte (Autobús + Furgoneta)",
+            concepto: "Comida Total",
+            total: Math.round(comidaTotal * 100) / 100,
+          },
+          {
+            concepto: "Transporte (Autobús + Furgoneta + Gasolina)",
             total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
-            ninos: 100,
-            personal: 0,
           },
           {
             concepto: "Material",
             total: Math.round(material * 100) / 100,
-            ninos: 100,
-            personal: 0,
           },
           {
-            concepto: "Estancia + Comida (Educadores)",
-            total: Math.round(costeRealPersonal * educadores * 100) / 100,
-            ninos: Math.max(0, Math.round((100 - porcPagaEducador) * 10) / 10),
-            personal: Math.min(100, Math.round(porcPagaEducador * 10) / 10),
-          },
-          {
-            concepto: "Estancia + Comida (Preeducadores)",
-            total: Math.round(costeRealPersonal * preeducadores * 100) / 100,
-            ninos: Math.max(
-              0,
-              Math.round((100 - porcPagaPreeducador) * 10) / 10,
-            ),
-            personal: Math.min(100, Math.round(porcPagaPreeducador * 10) / 10),
+            concepto: "Margen Total",
+            total: Math.round(margen * ninos * 100) / 100,
           },
         ];
-
-        if (cocina > 0) {
-          summary.push({
-            concepto: "Estancia + Comida (Cocina/Otros)",
-            total: Math.round(costeRealPersonal * cocina * 100) / 100,
-            ninos: Math.max(0, Math.round((100 - porcPagaCocina) * 10) / 10),
-            personal: Math.min(100, Math.round(porcPagaCocina * 10) / 10),
-          });
-        }
 
         let html = "";
         summary.forEach((item) => {
@@ -497,8 +477,6 @@
             html += `<tr>
         <td>${item.concepto}</td>
         <td style="text-align: right;">${item.total}€</td>
-        <td style="text-align: right; color: var(--color-text-info);">${item.ninos}%</td>
-        <td style="text-align: right;">${item.personal}%</td>
       </tr>`;
           }
         });
@@ -547,7 +525,8 @@
   </body>
   <footer>
     <p>
-      © 2026 Daniel Rovira Martínez. Distribuido bajo la licencia Apache License 2.0.
+      © 2026 Daniel Rovira Martínez. Distribuido bajo la licencia Apache License
+      2.0.
     </p>
   </footer>
 </html>
