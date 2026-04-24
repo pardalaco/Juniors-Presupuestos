@@ -80,10 +80,10 @@
             />
           </div>
           <div class="input-group">
-            <label>Coste noche/persona (€)</label>
+            <label>Coste día/persona (€)</label>
             <input
               type="number"
-              id="costeNoche"
+              id="costeDia"
               value="11"
               min="0"
               step="0.5"
@@ -345,9 +345,7 @@
         );
         const cocina = parseInt(document.getElementById("cocina").value);
 
-        const costeNoche = parseFloat(
-          document.getElementById("costeNoche").value,
-        );
+        const costeDia = parseFloat(document.getElementById("costeDia").value);
         const precioComida = parseFloat(
           document.getElementById("precioComida").value,
         );
@@ -370,7 +368,7 @@
           document.getElementById("precioCocina").value,
         );
 
-        const costoPersonaDia = costeNoche + precioComida;
+        const costoPersonaDia = costeDia + precioComida;
         const estanciaComidaTotalNiño = costoPersonaDia * dias;
 
         const costAutobus = autobus / ninos;
@@ -445,7 +443,7 @@
           (precioPreeducador / costeRealPersonal) * 100;
         const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
 
-        const estanciaTotal = costeNoche * dias * totalPersonas;
+        const estanciaTotal = costeDia * dias * totalPersonas;
         const comidaTotal = precioComida * dias * totalPersonas;
 
         const summary = [

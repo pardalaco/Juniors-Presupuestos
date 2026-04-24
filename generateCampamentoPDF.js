@@ -70,7 +70,7 @@ export function generatePDF() {
   addSection("Configuración General", [
     ["Número de días", document.getElementById("dias").value],
     ["Número de niños", document.getElementById("ninos").value],
-    ["Coste noche/persona", document.getElementById("costeNoche").value + "€"],
+    ["Coste día/persona", document.getElementById("costeDia").value + "€"],
     [
       "Precio comida/persona",
       document.getElementById("precioComida").value + "€",
@@ -94,20 +94,35 @@ export function generatePDF() {
     ],
   ]);
 
-  // Costes de Transporte y Material (columna derecha)
-  addSection(
-    "Costes de Transporte y Material",
+  // Costes de Transporte y Material (columna izquierda, después de Personal)
+  addSection("Costes de Transporte y Material", [
+    ["Precio autobús", document.getElementById("autobus").value + "€"],
+    ["Presupuesto Material", document.getElementById("material").value + "€"],
+    ["Presupuesto Furgoneta", document.getElementById("furgoneta").value + "€"],
+    ["Gasolina Campamento", document.getElementById("gasolina").value + "€"],
+  ]); // newColumn = false (por defecto)
+
+  yPosition = 60; // Espacio entre secciones
+
+  // Cambiar a columna derecha para Resumen de Costes y Resultados
+  xPosition = 110;
+
+  // Resumen de Costes (mismo formato que las demás secciones)
+  addSection("Resumen de Costes", [
     [
-      ["Precio autobús", document.getElementById("autobus").value + "€"],
-      ["Presupuesto Material", document.getElementById("material").value + "€"],
-      [
-        "Presupuesto Furgoneta",
-        document.getElementById("furgoneta").value + "€",
-      ],
-      ["Gasolina Campamento", document.getElementById("gasolina").value + "€"],
+      "Estancia + comida",
+      document.getElementById("estanciaComida").textContent,
     ],
-    true,
-  ); // newColumn = true
+    ["Autobús/niño", document.getElementById("costAutobus").textContent],
+    ["Material/niño", document.getElementById("costMaterial").textContent],
+    ["Furgoneta/niño", document.getElementById("costFurgoneta").textContent],
+    [
+      "Coste personal/niño",
+      document.getElementById("costEducadores").textContent,
+    ],
+    ["Margen", document.getElementById("costMargen").textContent],
+    ["Total personas", document.getElementById("totalPersonas").textContent],
+  ]);
 
   // Resultados en tabla (columna derecha)
   doc.setTextColor(...primaryColor);
@@ -120,26 +135,8 @@ export function generatePDF() {
   doc.line(xPosition, yPosition, xPosition + 80, yPosition);
   yPosition += 10;
 
-  // Crear tabla simple
+  // Resultados finales destacados
   const results = [
-    [
-      "Coste persona/día",
-      document.getElementById("costoPersonaDia").textContent,
-    ],
-    ["Estancia +", ""],
-    [
-      "comida total / persona",
-      document.getElementById("estanciaComida").textContent,
-    ],
-    ["Autobús/niño", document.getElementById("costAutobus").textContent],
-    ["Material/niño", document.getElementById("costMaterial").textContent],
-    ["Furgoneta/niño", document.getElementById("costFurgoneta").textContent],
-    [
-      "Coste personal/niño",
-      document.getElementById("costEducadores").textContent,
-    ],
-    ["Margen", document.getElementById("costMargen").textContent],
-    ["Total personas", document.getElementById("totalPersonas").textContent],
     [
       "Precio total por niño",
       document.getElementById("precioTotal").textContent,
@@ -187,21 +184,6 @@ export function generatePDF() {
       doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
 
       yPosition += 12; // Más espacio después
-    } else if (label === "Estancia +") {
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(label, xPosition + 5, yPosition);
-      doc.setTextColor(...accentColor);
-      yPosition += 7;
-    } else {
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(label + ":", xPosition + 5, yPosition);
-      doc.setTextColor(...accentColor);
-      doc.text(value, xPosition + 75, yPosition, { align: "right" });
-      yPosition += 7;
     }
   });
 
@@ -255,7 +237,7 @@ export function generatePDF() {
     document.getElementById("preeducadores").value,
   );
   const cocina = parseInt(document.getElementById("cocina").value);
-  const costeNoche = parseFloat(document.getElementById("costeNoche").value);
+  const costeDia = parseFloat(document.getElementById("costeDia").value);
   const precioComida = parseFloat(
     document.getElementById("precioComida").value,
   );
@@ -274,12 +256,13 @@ export function generatePDF() {
     document.getElementById("precioCocina").value,
   );
 
-  const costoPersonaDia = costeNoche + precioComida;
-  const estanciaComidaTotalNiño = costoPersonaDia * dias;
+  const costoPersonaDia = Math.round((costeDia + precioComida) * 100) / 100;
+  const estanciaComidaTotalNiño =
+    Math.round(costoPersonaDia * dias * 100) / 100;
   const costAutobus = autobus / ninos;
   const costMaterial = material / ninos;
   const costFurgoneta = (furgoneta + gasolina) / ninos;
-  const costeRealPersonal = costoPersonaDia * dias;
+  const costeRealPersonal = Math.round(costoPersonaDia * dias * 100) / 100;
   const subvencionEducadores =
     (costeRealPersonal - precioEducador) * educadores;
   const subvencionPreeducadores =
@@ -299,7 +282,7 @@ export function generatePDF() {
     ) / 100;
 
   const calcLines = [
-    `Coste por persona/día: ${costeNoche}€ (noche) + ${precioComida}€ (comida) = ${costoPersonaDia}€`,
+    `Coste por persona/día: ${costeDia}€ (noche) + ${precioComida}€ (comida) = ${costoPersonaDia}€`,
     `Estancia + comida total por niño: ${costoPersonaDia}€ x ${dias} días = ${estanciaComidaTotalNiño}€`,
     `Autobús por niño: ${autobus}€ / ${ninos} niños = ${costAutobus.toFixed(2)}€`,
     `Material por niño: ${material}€ / ${ninos} niños = ${costMaterial.toFixed(2)}€`,
