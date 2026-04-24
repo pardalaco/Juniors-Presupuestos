@@ -450,22 +450,27 @@
           {
             concepto: "Estancia Total",
             total: Math.round(estanciaTotal * 100) / 100,
+            id: "estanciaTotal",
           },
           {
             concepto: "Comida Total",
             total: Math.round(comidaTotal * 100) / 100,
+            id: "comidaTotal",
           },
           {
             concepto: "Transporte (Autobús + Furgoneta + Gasolina)",
             total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
+            id: "transporteTotal",
           },
           {
             concepto: "Material",
             total: Math.round(material * 100) / 100,
+            id: "materialTotal",
           },
           {
             concepto: "Margen Total",
             total: Math.round(margen * ninos * 100) / 100,
+            id: "margenTotal",
           },
         ];
 
@@ -474,7 +479,7 @@
           if (item.total > 0) {
             html += `<tr>
         <td>${item.concepto}</td>
-        <td style="text-align: right;">${item.total}€</td>
+        <td style="text-align: right;" id="${item.id}">${item.total}€</td>
       </tr>`;
           }
         });
