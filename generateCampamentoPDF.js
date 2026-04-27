@@ -117,12 +117,8 @@ export function generatePDF() {
     ["Estancia Total", document.getElementById("estanciaTotal").textContent],
     ["Comida Total", document.getElementById("comidaTotal").textContent],
     ["Autobús", document.getElementById("autobus").value + "€"],
-    [
-      "Furgoneta + Gasolina",
-      parseFloat(document.getElementById("furgoneta").value) +
-        parseFloat(document.getElementById("gasolina").value) +
-        "€",
-    ],
+    ["Furgoneta", parseFloat(document.getElementById("furgoneta").value) + "€"],
+    ["Gasolina", parseFloat(document.getElementById("gasolina").value) + "€"],
     ["Material Total", document.getElementById("materialTotal").textContent],
     ["Margen Total", document.getElementById("margenTotal").textContent],
   ];
