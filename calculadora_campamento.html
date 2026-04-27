@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculadora de Presupuesto Campamento</title>
-    <script type="module" crossorigin src="/Juniors-Presupuestos/assets/campamento-D5Vymuug.js"></script>
+    <script type="module" crossorigin src="/Juniors-Presupuestos/assets/campamento-D9Aeob5e.js"></script>
     <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/chunk-C_Lf2zpa.js">
     <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/typeof-v3x6qlpQ.js">
     <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/jspdf.es.min-CA8_PzSQ.js">
-    <link rel="stylesheet" crossorigin href="/Juniors-Presupuestos/assets/styles-COVBfNzR.css">
+    <link rel="stylesheet" crossorigin href="/Juniors-Presupuestos/assets/styles-Dn6UH1sa.css">
   </head>
   <body>
     <div class="container">
@@ -84,15 +84,21 @@
             />
           </div>
           <div class="input-group">
-            <label>Coste día/persona (€)</label>
-            <input
-              type="number"
-              id="costeDia"
-              value="11"
-              min="0"
-              step="0.5"
-              onchange="calculate()"
-            />
+            <label id="labelCosteDia">Coste día/noche/persona (€)</label>
+            <div class="coste-row">
+              <select id="tipoCoste" onchange="calculate()">
+                <option value="dia" selected>Día</option>
+                <option value="noche">Noche</option>
+              </select>
+              <input
+                type="number"
+                id="costeDia"
+                value="11"
+                min="0"
+                step="0.5"
+                onchange="calculate()"
+              />
+            </div>
           </div>
           <div class="input-group">
             <label>Precio comida/persona (€)</label>
@@ -326,6 +332,7 @@
           <thead>
             <tr>
               <th>Concepto</th>
+              <th>Cálculo</th>
               <th style="text-align: right">Coste Total (€)</th>
             </tr>
           </thead>
@@ -349,6 +356,7 @@
         const cocina = parseInt(document.getElementById("cocina").value);
 
         const costeDia = parseFloat(document.getElementById("costeDia").value);
+        const tipoCoste = document.getElementById("tipoCoste").value;
         const precioComida = parseFloat(
           document.getElementById("precioComida").value,
         );
@@ -371,15 +379,27 @@
           document.getElementById("precioCocina").value,
         );
 
-        const costoPersonaDia = costeDia + precioComida;
-        const estanciaComidaTotalNiño = costoPersonaDia * dias;
+        // Ajuste según tipo de coste (día o noche)
+        // Si es por noche, se resta 1 día porque la última noche no tiene coste de estancia
+        const diasEstancia =
+          tipoCoste === "noche" ? Math.max(0, dias - 1) : dias;
+
+        const strDiasNoches = tipoCoste === "noche" ? "noche" : "dias";
+
+        document.getElementById("labelCosteDia").innerHTML =
+          `Coste ${strDiasNoches}/persona (€)`;
+
+        const estanciaComidaTotalNiño =
+          costeDia * diasEstancia + precioComida * dias;
+
+        const costoPersonaDia = estanciaComidaTotalNiño / dias;
 
         const costAutobus = autobus / ninos;
         const costMaterial = material / ninos;
         const costFurgoneta = (furgoneta + gasolina) / ninos;
 
         // El coste real de cada personal es el mismo que el de un niño (estancia + comida)
-        const costeRealPersonal = costoPersonaDia * dias;
+        const costeRealPersonal = costoPersonaDia * diasEstancia;
 
         // Lo que los niños tienen que "subvencionar" es la diferencia entre el coste real y lo que paga el personal
         const subvencionEducadores =
@@ -441,37 +461,44 @@
           presupuestoTotal.toLocaleString("es-ES") + "€";
 
         // Cálculo para la tabla resumen (qué porcentaje del coste real de cada grupo cubren ellos mismos)
-        const porcPagaEducador = (precioEducador / costeRealPersonal) * 100;
+        const costeRealPersonalTotal = costoPersonaDia * diasEstancia;
+        const porcPagaEducador =
+          (precioEducador / costeRealPersonalTotal) * 100;
         const porcPagaPreeducador =
-          (precioPreeducador / costeRealPersonal) * 100;
-        const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
+          (precioPreeducador / costeRealPersonalTotal) * 100;
+        const porcPagaCocina = (precioCocina / costeRealPersonalTotal) * 100;
 
-        const estanciaTotal = costeDia * dias * totalPersonas;
+        const estanciaTotal = costeDia * diasEstancia * totalPersonas;
         const comidaTotal = precioComida * dias * totalPersonas;
 
         const summary = [
           {
             concepto: "Estancia Total",
+            calculo: `${costeDia}€ x ${diasEstancia} ${strDiasNoches} x ${totalPersonas} personas`,
             total: Math.round(estanciaTotal * 100) / 100,
             id: "estanciaTotal",
           },
           {
             concepto: "Comida Total",
+            calculo: `${precioComida}€ x ${dias} días x ${totalPersonas} personas`,
             total: Math.round(comidaTotal * 100) / 100,
             id: "comidaTotal",
           },
           {
             concepto: "Transporte (Autobús + Furgoneta + Gasolina)",
+            calculo: `${autobus}€ + ${furgoneta}€ + ${gasolina}€`,
             total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
             id: "transporteTotal",
           },
           {
             concepto: "Material",
+            calculo: `${material}€`,
             total: Math.round(material * 100) / 100,
             id: "materialTotal",
           },
           {
             concepto: "Margen Total",
+            calculo: `${margen}€ x ${ninos} niños`,
             total: Math.round(margen * ninos * 100) / 100,
             id: "margenTotal",
           },
@@ -482,6 +509,7 @@
           if (item.total > 0) {
             html += `<tr>
         <td>${item.concepto}</td>
+        <td>${item.calculo}</td>
         <td style="text-align: right;" id="${item.id}">${item.total}€</td>
       </tr>`;
           }
