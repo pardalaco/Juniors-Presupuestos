@@ -89,8 +89,19 @@ export function generatePDF() {
   doc.setFontSize(fontSizeCuerpo);
   doc.setFont("helvetica", "normal");
 
+  const dias = document.getElementById("dias").value;
+  const noches = dias > 0 ? dias - 1 : 0;
+
+  const strDiasNoches =
+    document.getElementById("tipoCoste").value === "noche" ? "noches" : "días";
+
   const datosGen = [
-    ["Nº días", document.getElementById("dias").value],
+    ["Nº días", dias],
+    ["Nº noches", noches.toString()],
+    [
+      "Coste " + strDiasNoches + "/niño",
+      document.getElementById("costeDia").value + "€",
+    ],
     ["Precio comida/día", document.getElementById("precioComida").value + "€"],
     ["Margen por niño", document.getElementById("margen").value + "€"],
   ];

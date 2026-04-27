@@ -80,7 +80,7 @@
             />
           </div>
           <div class="input-group">
-            <label>Coste día/noche/persona (€)</label>
+            <label id="labelCosteDia">Coste día/noche/persona (€)</label>
             <div class="coste-row">
               <select id="tipoCoste" onchange="calculate()">
                 <option value="dia" selected>Día</option>
@@ -328,6 +328,7 @@
           <thead>
             <tr>
               <th>Concepto</th>
+              <th>Cálculo</th>
               <th style="text-align: right">Coste Total (€)</th>
             </tr>
           </thead>
@@ -379,6 +380,11 @@
         // Si es por noche, se resta 1 día porque la última noche no tiene coste de estancia
         const diasEstancia =
           tipoCoste === "noche" ? Math.max(0, dias - 1) : dias;
+
+        const strDiasNoches = tipoCoste === "noche" ? "noche" : "dias";
+
+        document.getElementById("labelCosteDia").innerHTML =
+          `Coste ${strDiasNoches}/persona (€)`;
 
         const estanciaComidaTotalNiño =
           costeDia * diasEstancia + precioComida * dias;
@@ -465,7 +471,7 @@
         const summary = [
           {
             concepto: "Estancia Total",
-            calculo: `${costeDia}€ x ${diasEstancia} días x ${totalPersonas} personas`,
+            calculo: `${costeDia}€ x ${diasEstancia} ${strDiasNoches} x ${totalPersonas} personas`,
             total: Math.round(estanciaTotal * 100) / 100,
             id: "estanciaTotal",
           },
