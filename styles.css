@@ -90,6 +90,24 @@ body[data-theme="dark"] {
   outline: none;
   border-color: var(--color-border-primary);
 }
+.coste-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.coste-row select {
+  flex: 0 0 100px;
+  padding: 0.75rem;
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+.coste-row input {
+  flex: 1;
+  min-width: 0;
+}
 .rol-wrapper {
   display: grid;
   grid-template-columns: 1fr 120px;
