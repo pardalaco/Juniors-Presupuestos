@@ -80,15 +80,26 @@
             />
           </div>
           <div class="input-group">
-            <label>Coste día/persona (€)</label>
-            <input
-              type="number"
-              id="costeDia"
-              value="11"
-              min="0"
-              step="0.5"
-              onchange="calculate()"
-            />
+            <label>Coste día/noche/persona (€)</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center">
+              <select
+                id="tipoCoste"
+                style="flex: 0 0 100px"
+                onchange="calculate()"
+              >
+                <option value="dia" selected>Día</option>
+                <option value="noche">Noche</option>
+              </select>
+              <input
+                type="number"
+                id="costeDia"
+                value="11"
+                min="0"
+                step="0.5"
+                style="flex: 1"
+                onchange="calculate()"
+              />
+            </div>
           </div>
           <div class="input-group">
             <label>Precio comida/persona (€)</label>
@@ -346,6 +357,7 @@
         const cocina = parseInt(document.getElementById("cocina").value);
 
         const costeDia = parseFloat(document.getElementById("costeDia").value);
+        const tipoCoste = document.getElementById("tipoCoste").value;
         const precioComida = parseFloat(
           document.getElementById("precioComida").value,
         );
@@ -368,15 +380,20 @@
           document.getElementById("precioCocina").value,
         );
 
+        // Ajuste según tipo de coste (día o noche)
+        // Si es por noche, se resta 1 día porque la última noche no tiene coste de estancia
+        const diasEstancia =
+          tipoCoste === "noche" ? Math.max(0, dias - 1) : dias;
+
         const costoPersonaDia = costeDia + precioComida;
-        const estanciaComidaTotalNiño = costoPersonaDia * dias;
+        const estanciaComidaTotalNiño = costoPersonaDia * diasEstancia;
 
         const costAutobus = autobus / ninos;
         const costMaterial = material / ninos;
         const costFurgoneta = (furgoneta + gasolina) / ninos;
 
         // El coste real de cada personal es el mismo que el de un niño (estancia + comida)
-        const costeRealPersonal = costoPersonaDia * dias;
+        const costeRealPersonal = costoPersonaDia * diasEstancia;
 
         // Lo que los niños tienen que "subvencionar" es la diferencia entre el coste real y lo que paga el personal
         const subvencionEducadores =
@@ -438,37 +455,44 @@
           presupuestoTotal.toLocaleString("es-ES") + "€";
 
         // Cálculo para la tabla resumen (qué porcentaje del coste real de cada grupo cubren ellos mismos)
-        const porcPagaEducador = (precioEducador / costeRealPersonal) * 100;
+        const costeRealPersonalTotal = costoPersonaDia * diasEstancia;
+        const porcPagaEducador =
+          (precioEducador / costeRealPersonalTotal) * 100;
         const porcPagaPreeducador =
-          (precioPreeducador / costeRealPersonal) * 100;
-        const porcPagaCocina = (precioCocina / costeRealPersonal) * 100;
+          (precioPreeducador / costeRealPersonalTotal) * 100;
+        const porcPagaCocina = (precioCocina / costeRealPersonalTotal) * 100;
 
-        const estanciaTotal = costeDia * dias * totalPersonas;
+        const estanciaTotal = costeDia * diasEstancia * totalPersonas;
         const comidaTotal = precioComida * dias * totalPersonas;
 
         const summary = [
           {
             concepto: "Estancia Total",
+            calculo: `${costeDia}€ x ${diasEstancia} días x ${totalPersonas} personas`,
             total: Math.round(estanciaTotal * 100) / 100,
             id: "estanciaTotal",
           },
           {
             concepto: "Comida Total",
+            calculo: `${precioComida}€ x ${dias} días x ${totalPersonas} personas`,
             total: Math.round(comidaTotal * 100) / 100,
             id: "comidaTotal",
           },
           {
             concepto: "Transporte (Autobús + Furgoneta + Gasolina)",
+            calculo: `${autobus}€ + ${furgoneta}€ + ${gasolina}€`,
             total: Math.round((autobus + furgoneta + gasolina) * 100) / 100,
             id: "transporteTotal",
           },
           {
             concepto: "Material",
+            calculo: `${material}€`,
             total: Math.round(material * 100) / 100,
             id: "materialTotal",
           },
           {
             concepto: "Margen Total",
+            calculo: `${margen}€ x ${ninos} niños`,
             total: Math.round(margen * ninos * 100) / 100,
             id: "margenTotal",
           },
@@ -479,6 +503,7 @@
           if (item.total > 0) {
             html += `<tr>
         <td>${item.concepto}</td>
+        <td>${item.calculo}</td>
         <td style="text-align: right;" id="${item.id}">${item.total}€</td>
       </tr>`;
           }
