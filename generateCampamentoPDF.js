@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 export function generatePDF() {
   const doc = new jsPDF();
 
-  // Configuración de colores
+  // Colores originales
   const primaryColor = [0, 102, 204]; // Azul
   const secondaryColor = [100, 100, 100]; // Gris
   const accentColor = [255, 87, 34]; // Naranja
@@ -32,7 +32,7 @@ export function generatePDF() {
   const today = new Date().toLocaleDateString("es-ES");
   doc.text(`Generado el: ${today}`, 20, 40);
 
-  // --- CONFIGURACIÓN DE CUERPO UNIFICADO ---
+  // --- CONFIGURACIÓN DE CUERPO UNIFICADO (Tamaño 11) ---
   const fontSizeCuerpo = 11;
   const colLeftX = 20;
   const colRightX = 110;
@@ -41,8 +41,7 @@ export function generatePDF() {
   let yLeft = 60;
   let yRight = 60;
 
-  // --- BLOQUE 1: Nº PERSONAS (Izquierda) vs DATOS GENERALES (Derecha) ---
-  // Izquierda: Nº Personas
+  // --- COLUMNA IZQUIERDA: 1. Nº PERSONAS ---
   doc.setTextColor(...primaryColor);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
@@ -79,13 +78,14 @@ export function generatePDF() {
     { align: "right" },
   );
 
-  // Derecha: Datos Generales
+  // --- COLUMNA IZQUIERDA: 2. DATOS GENERALES ---
+  yLeft += 20;
   doc.setTextColor(...primaryColor);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text("Datos generales", colRightX, yRight);
+  doc.text("Datos generales", colLeftX, yLeft);
 
-  yRight += 10;
+  yLeft += 10;
   doc.setFontSize(fontSizeCuerpo);
   doc.setFont("helvetica", "normal");
 
@@ -97,17 +97,60 @@ export function generatePDF() {
 
   datosGen.forEach(([label, value]) => {
     doc.setTextColor(0, 0, 0);
+    doc.text(label + ":", colLeftX + 5, yLeft);
+    doc.setTextColor(...accentColor);
+    doc.text(value, colLeftX + colWidth, yLeft, { align: "right" });
+    yLeft += 8;
+  });
+
+  // --- COLUMNA DERECHA: COSTES TOTALES (Intercambiado) ---
+  doc.setTextColor(...primaryColor);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("Costes Totales", colRightX, yRight);
+
+  yRight += 10;
+  doc.setFontSize(fontSizeCuerpo);
+  doc.setFont("helvetica", "normal");
+
+  const costesTotales = [
+    ["Estancia Total", document.getElementById("estanciaTotal").textContent],
+    ["Comida Total", document.getElementById("comidaTotal").textContent],
+    ["Autobús", document.getElementById("autobus").value + "€"],
+    [
+      "Furgoneta + Gasolina",
+      parseFloat(document.getElementById("furgoneta").value) +
+        parseFloat(document.getElementById("gasolina").value) +
+        "€",
+    ],
+    ["Material Total", document.getElementById("materialTotal").textContent],
+    ["Margen Total", document.getElementById("margenTotal").textContent],
+  ];
+
+  costesTotales.forEach(([label, value]) => {
+    doc.setTextColor(0, 0, 0);
     doc.text(label + ":", colRightX + 5, yRight);
     doc.setTextColor(...accentColor);
     doc.text(value, colRightX + colWidth, yRight, { align: "right" });
     yRight += 8;
   });
 
-  // --- BLOQUE 2: ALINEACIÓN DE PAGOS PERSONAL Y RESUMEN COSTES NIÑO ---
-  // Calculamos una posición Y común para que ambos títulos estén alineados
-  const ySeccion2 = Math.max(yLeft, yRight) + 20;
-  yLeft = ySeccion2;
-  yRight = ySeccion2;
+  doc.setDrawColor(...primaryColor);
+  doc.line(colRightX + 5, yRight - 2, colRightX + colWidth, yRight - 2);
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "bold");
+  doc.text("TOTAL PRESUPUESTO:", colRightX + 5, yRight + 5);
+  doc.text(
+    document.getElementById("presupuestoTotal").textContent,
+    colRightX + colWidth,
+    yRight + 5,
+    { align: "right" },
+  );
+
+  // --- SECCIÓN INFERIOR: PAGOS PERSONAL (Izquierda) vs RESUMEN NIÑO (Derecha) ---
+  const ySeccionFinal = Math.max(yLeft, yRight) + 20;
+  yLeft = ySeccionFinal;
+  yRight = ySeccionFinal;
 
   // Izquierda: Pagos Personal
   doc.setTextColor(...primaryColor);
@@ -182,7 +225,6 @@ export function generatePDF() {
     yRight += 8;
   });
 
-  // Total Niño (Estilo igual a Total Personas)
   doc.setDrawColor(...primaryColor);
   doc.line(colRightX + 5, yRight - 2, colRightX + colWidth, yRight - 2);
   doc.setTextColor(0, 0, 0);
@@ -195,59 +237,16 @@ export function generatePDF() {
     { align: "right" },
   );
 
-  // --- BLOQUE 3: COSTES TOTALES ---
-  const ySeccion3 = Math.max(yLeft, yRight) + 20;
-  yLeft = ySeccion3;
-
-  doc.setTextColor(...primaryColor);
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text("Costes Totales del Campamento", colLeftX, yLeft);
-
-  yLeft += 10;
-  doc.setFontSize(fontSizeCuerpo);
-  doc.setFont("helvetica", "normal");
-
-  const costesTotales = [
-    ["Estancia Total", document.getElementById("estanciaTotal").textContent],
-    ["Comida Total", document.getElementById("comidaTotal").textContent],
-    ["Autobús", document.getElementById("autobus").value + "€"],
-    [
-      "Furgoneta + Gasolina",
-      parseFloat(document.getElementById("furgoneta").value) +
-        parseFloat(document.getElementById("gasolina").value) +
-        "€",
-    ],
-    ["Material Total", document.getElementById("materialTotal").textContent],
-    ["Margen Total", document.getElementById("margenTotal").textContent],
-  ];
-
-  costesTotales.forEach(([label, value]) => {
-    doc.setTextColor(0, 0, 0);
-    doc.text(label + ":", colLeftX + 5, yLeft);
-    doc.setTextColor(...accentColor);
-    doc.text(value, colLeftX + colWidth, yLeft, { align: "right" });
-    yLeft += 8;
-  });
-
-  // Total Presupuesto (Estilo igual a Total Personas)
-  doc.setDrawColor(...primaryColor);
-  doc.line(colLeftX + 5, yLeft - 2, colLeftX + colWidth, yLeft - 2);
-  doc.setTextColor(0, 0, 0);
-  doc.setFont("helvetica", "bold");
-  doc.text("TOTAL PRESUPUESTO:", colLeftX + 5, yLeft + 5);
-  doc.text(
-    document.getElementById("presupuestoTotal").textContent,
-    colLeftX + colWidth,
-    yLeft + 5,
-    { align: "right" },
-  );
-
-  // Pie de página
+  // --- PIE DE PÁGINA CON LINK ---
+  const footerY = 280;
   doc.setFontSize(10);
   doc.setTextColor(...secondaryColor);
-  doc.text("Generado con Calculadora de Presupuestos Juniors", 105, 280, {
-    align: "center",
+  const textoFooter = "Generado con Calculadora de Presupuestos Juniors";
+  doc.text(textoFooter, 105, footerY, { align: "center" });
+
+  const textWidth = doc.getTextWidth(textoFooter);
+  doc.link(105 - textWidth / 2, footerY - 5, textWidth, 10, {
+    url: "https://pardalaco.github.io/Juniors-Presupuestos/",
   });
 
   doc.save(`${nombreArchivo}.pdf`);
