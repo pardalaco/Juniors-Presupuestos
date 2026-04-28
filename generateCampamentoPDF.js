@@ -125,18 +125,52 @@ export function generatePDF() {
   doc.setFont("helvetica", "normal");
 
   const costesTotales = [
-    ["Estancia Total", document.getElementById("estanciaTotal").textContent],
-    ["Comida Total", document.getElementById("comidaTotal").textContent],
-    ["Autobús", document.getElementById("autobus").value + "€"],
-    ["Furgoneta", parseFloat(document.getElementById("furgoneta").value) + "€"],
-    ["Gasolina", parseFloat(document.getElementById("gasolina").value) + "€"],
-    ["Material Total", document.getElementById("materialTotal").textContent],
-    ["Margen Total", document.getElementById("margenTotal").textContent],
+    [
+      "Estancia Total",
+      document.getElementById("costeDia").value + "€",
+      "x" + document.getElementById("totalPersonas").textContent,
+      document.getElementById("estanciaTotal").textContent,
+    ],
+    [
+      "Comida Total",
+      document.getElementById("precioComida").value + "€",
+      "x" + document.getElementById("totalPersonas").textContent,
+      document.getElementById("comidaTotal").textContent,
+    ],
+    ["Autobús", "", "", document.getElementById("autobus").value + "€"],
+    [
+      "Furgoneta",
+      "",
+      "",
+      parseFloat(document.getElementById("furgoneta").value) + "€",
+    ],
+    [
+      "Gasolina",
+      "",
+      "",
+      parseFloat(document.getElementById("gasolina").value) + "€",
+    ],
+    [
+      "Material Total",
+      "",
+      "",
+      document.getElementById("materialTotal").textContent,
+    ],
+    [
+      "Margen Total",
+      document.getElementById("costMargen").textContent,
+      "x" + document.getElementById("totalPersonas").textContent,
+      document.getElementById("margenTotal").textContent,
+    ],
   ];
 
-  costesTotales.forEach(([label, value]) => {
+  costesTotales.forEach(([label, price, qty, value]) => {
     doc.setTextColor(0, 0, 0);
     doc.text(label + ":", colRightX + 5, yRight);
+    doc.setFontSize(9);
+    doc.setTextColor(...secondaryColor);
+    doc.text(`${price} ${qty}`, colRightX + 38, yRight);
+    doc.setFontSize(fontSizeCuerpo);
     doc.setTextColor(...accentColor);
     doc.text(value, colRightX + colWidth, yRight, { align: "right" });
     yRight += 8;
