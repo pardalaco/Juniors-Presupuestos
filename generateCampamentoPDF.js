@@ -184,9 +184,9 @@ export function generatePDF() {
     ],
     [
       "Cocina/Otros",
-      `0€/p`,
+      `${document.getElementById("precioCocina").value}€/p`,
       `x${document.getElementById("cocina").value}`,
-      `0€`,
+      `${document.getElementById("precioCocina").value * document.getElementById("cocina").value}€`,
     ],
   ];
 
