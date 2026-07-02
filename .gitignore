@@ -10,3 +10,6 @@ npm-debug.log*
 # Archivos de configuración local
 dist/
 build/
+
+# Archivos del sistema operativo
+.DS_Store
