@@ -4,10 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculadora de Presupuesto Campamento</title>
-    <script type="module" crossorigin src="/Juniors-Presupuestos/assets/campamento-Dw6fl97-.js"></script>
-    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/chunk-C_Lf2zpa.js">
-    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/typeof-v3x6qlpQ.js">
-    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/jspdf.es.min-CA8_PzSQ.js">
+    <script type="module" crossorigin src="/Juniors-Presupuestos/assets/campamento-B1NF6ihP.js"></script>
+    <link rel="modulepreload" crossorigin href="/Juniors-Presupuestos/assets/jspdf.es.min-D0zl4h-J.js">
     <link rel="stylesheet" crossorigin href="/Juniors-Presupuestos/assets/styles-Dn6UH1sa.css">
   </head>
   <body>
@@ -358,7 +356,7 @@
         const precioComida = parseFloat(
           document.getElementById("precioComida").value,
         );
-        const margen = parseFloat(document.getElementById("margen").value);
+        const margen = parseFloat(document.getElementById("margen").value) || 0;
 
         const autobus = parseFloat(document.getElementById("autobus").value);
         const material = parseFloat(document.getElementById("material").value);
@@ -504,13 +502,11 @@
 
         let html = "";
         summary.forEach((item) => {
-          if (item.total > 0) {
-            html += `<tr>
+          html += `<tr>
         <td>${item.concepto}</td>
         <td>${item.calculo}</td>
         <td style="text-align: right;" id="${item.id}">${item.total}€</td>
       </tr>`;
-          }
         });
         document.getElementById("summaryBody").innerHTML = html;
       }
