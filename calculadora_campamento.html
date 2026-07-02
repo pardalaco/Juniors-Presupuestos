@@ -355,7 +355,7 @@
         const precioComida = parseFloat(
           document.getElementById("precioComida").value,
         );
-        const margen = parseFloat(document.getElementById("margen").value);
+        const margen = parseFloat(document.getElementById("margen").value) || 0;
 
         const autobus = parseFloat(document.getElementById("autobus").value);
         const material = parseFloat(document.getElementById("material").value);
@@ -501,13 +501,11 @@
 
         let html = "";
         summary.forEach((item) => {
-          if (item.total > 0) {
-            html += `<tr>
+          html += `<tr>
         <td>${item.concepto}</td>
         <td>${item.calculo}</td>
         <td style="text-align: right;" id="${item.id}">${item.total}€</td>
       </tr>`;
-          }
         });
         document.getElementById("summaryBody").innerHTML = html;
       }
