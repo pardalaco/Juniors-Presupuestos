@@ -35,7 +35,7 @@ export function generatePDF() {
   let xPosition = 20; // Columna izquierda
 
   // Función auxiliar para secciones
-  function addSection(title, items, newColumn = false) {
+  function addSection(title, items, newColumn = false, total = []) {
     if (newColumn) {
       xPosition = 110; // Cambiar a columna derecha
       yPosition = 60; // Resetear yPosition para la nueva columna
@@ -48,8 +48,6 @@ export function generatePDF() {
     yPosition += 10;
 
     doc.setDrawColor(...primaryColor);
-    doc.line(xPosition, yPosition, xPosition + 80, yPosition); // Línea horizontal más corta
-    yPosition += 10;
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(11); // Fuente un poco más pequeña para ahorrar espacio
@@ -63,7 +61,19 @@ export function generatePDF() {
       yPosition += 7; // Espaciado más pequeño
     });
 
-    yPosition += 10; // Espacio entre secciones
+    if (total.length) {
+      doc.setDrawColor(...primaryColor);
+      doc.line(xPosition + 75, yPosition, xPosition + 5, yPosition);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "bold");
+      yPosition += 10;
+
+      // Total
+      doc.text(total[0], xPosition + 5, yPosition);
+      doc.text(total[1], xPosition + 75, yPosition, { align: "right" });
+    }
+
+    yPosition += 15; // Espacio entre secciones
   }
 
   // Configuración General (columna izquierda)
@@ -105,75 +115,22 @@ export function generatePDF() {
     `${activity.price}€ (${activity.mode})`,
   ]);
 
-  addSection("Gastos y Actividades", activityItems, true);
+  addSection("Gastos totales y Actividades", activityItems, true, [
+    "Total presupuesto:",
+    document.getElementById("totalGrupo").textContent,
+  ]);
 
   // Resultados (columna derecha, continuar)
-  doc.setTextColor(...primaryColor);
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text("Resultados del Cálculo", xPosition, yPosition);
-  yPosition += 10;
-
-  doc.setDrawColor(...primaryColor);
-  doc.line(xPosition, yPosition, xPosition + 80, yPosition);
-  yPosition += 10;
-
-  // Crear tabla simple de resultados
   const results = [
     ["Coste servicios", document.getElementById("gastosTotal").textContent],
     ["Aporte personal", document.getElementById("aportePersonal").textContent],
     ["Total personas", document.getElementById("totalPersonas").textContent],
-    ["Total grupo", document.getElementById("totalGrupo").textContent],
-    ["Precio por niño", document.getElementById("precioPorNino").textContent],
   ];
 
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "normal");
-
-  results.forEach(([label, value], index) => {
-    // Resaltar precio por niño y total grupo con más tamaño y colores destacados
-    if (label === "Precio por niño") {
-      // Añadir espacio extra antes
-      yPosition += 5;
-
-      // Fondo azul más grande
-      doc.setFillColor(0, 102, 204); // Azul
-      doc.roundedRect(xPosition - 5, yPosition - 5, 90, 14, 2, 2, "F");
-
-      // Texto más grande y blanco
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text(label + ":", xPosition + 5, yPosition + 3);
-      doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
-
-      yPosition += 12; // Más espacio después
-    } else if (label === "Total grupo") {
-      // Añadir espacio extra antes
-      yPosition += 5;
-
-      // Fondo verde más grande
-      doc.setFillColor(34, 139, 34); // Verde
-      doc.roundedRect(xPosition - 5, yPosition - 5, 90, 14, 2, 2, "F");
-
-      // Texto más grande y blanco
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text(label + ":", xPosition + 5, yPosition + 3);
-      doc.text(value, xPosition + 75, yPosition + 3, { align: "right" });
-
-      yPosition += 12; // Más espacio después
-    } else {
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(label + ":", xPosition + 5, yPosition);
-      doc.setTextColor(...accentColor);
-      doc.text(value, xPosition + 75, yPosition, { align: "right" });
-      yPosition += 7;
-    }
-  });
+  addSection("Resultados del Cálculo", results, false, [
+    "Precio por niño",
+    document.getElementById("precioPorNino").textContent,
+  ]);
 
   // Pie de página
   doc.setFontSize(10);
@@ -192,145 +149,6 @@ export function generatePDF() {
 
   // 3. Añadimos el enlace sobre el área del texto
   // Parámetros: x, y, ancho, alto, url
-  doc.link(startX, y - 5, textWidth, 10, {
-    url: "https://pardalaco.github.io/Juniors-Presupuestos/",
-  });
-
-  // Segunda página: Detalles de cálculos
-  doc.addPage();
-  let detailY = 25;
-  const detailX = 20;
-
-  doc.setTextColor(...primaryColor);
-  doc.setFontSize(16);
-  doc.setFont("helvetica", "bold");
-  doc.text("Detalles de Cálculos", 105, detailY, { align: "center" });
-  detailY += 8;
-  doc.setDrawColor(...primaryColor);
-  doc.line(detailX, detailY, 190, detailY);
-  detailY += 12;
-
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(0, 0, 0);
-
-  const ninos = parseInt(document.getElementById("ninos").value, 10) || 0;
-  const educadores =
-    parseInt(document.getElementById("educadores").value, 10) || 0;
-  const preeducadores =
-    parseInt(document.getElementById("preeducadores").value, 10) || 0;
-  const otros = parseInt(document.getElementById("otros").value, 10) || 0;
-  const pagoEducadores =
-    parseFloat(document.getElementById("pagoEducadores").value) || 0;
-  const pagoPreeducadores =
-    parseFloat(document.getElementById("pagoPreeducadores").value) || 0;
-  const pagoOtros = parseFloat(document.getElementById("pagoOtros").value) || 0;
-
-  const pagoEducadoresTotal = pagoEducadores * educadores;
-  const pagoPreeducadoresTotal = pagoPreeducadores * preeducadores;
-  const pagoOtrosTotal = pagoOtros * otros;
-  const totalPersonas = ninos + educadores + preeducadores + otros;
-
-  const actualActivities = window.activities || [];
-
-  const activityDetails = actualActivities.map((activity) => {
-    const amount =
-      activity.mode === "porPersona"
-        ? activity.price * totalPersonas
-        : activity.mode === "porNino"
-          ? activity.price * ninos
-          : activity.price;
-    return {
-      label: activity.name,
-      mode: activity.mode,
-      unit: activity.price,
-      amount,
-    };
-  });
-
-  const gastosTotal = activityDetails.reduce(
-    (sum, item) => sum + item.amount,
-    0,
-  );
-  const aportePersonal =
-    pagoEducadoresTotal + pagoPreeducadoresTotal + pagoOtrosTotal;
-  const precioPorNino =
-    ninos > 0 ? Math.max(0, gastosTotal - aportePersonal) / ninos : 0;
-
-  function formatCurrency(value) {
-    return `${Math.round(value * 100) / 100}€`;
-  }
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Resumen de entradas:", detailX, detailY);
-  detailY += 8;
-  doc.setFont("helvetica", "normal");
-  doc.text(`Niños: ${ninos}`, detailX, detailY);
-  detailY += 7;
-  doc.text(
-    `Educadores: ${educadores} @ ${formatCurrency(pagoEducadores)}`,
-    detailX,
-    detailY,
-  );
-  detailY += 7;
-  doc.text(
-    `Preeducadores: ${preeducadores} @ ${formatCurrency(pagoPreeducadores)}`,
-    detailX,
-    detailY,
-  );
-  detailY += 7;
-  doc.text(`Otros: ${otros} @ ${formatCurrency(pagoOtros)}`, detailX, detailY);
-  detailY += 7;
-  doc.text(`Total personas: ${totalPersonas}`, detailX, detailY);
-  detailY += 12;
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Detalle de gastos y actividades:", detailX, detailY);
-  detailY += 8;
-  doc.setFont("helvetica", "normal");
-
-  activityDetails.forEach((item) => {
-    const modeLabel =
-      item.mode === "porPersona"
-        ? "por persona"
-        : item.mode === "porNino"
-          ? "por niño"
-          : "total";
-    doc.text(
-      `${item.label}: ${formatCurrency(item.unit)} (${modeLabel}) = ${formatCurrency(item.amount)}`,
-      detailX,
-      detailY,
-    );
-    detailY += 7;
-  });
-  detailY += 6;
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Cálculos finales:", detailX, detailY);
-  detailY += 8;
-  doc.setFont("helvetica", "normal");
-
-  doc.text(`Gastos totales: ${formatCurrency(gastosTotal)}`, detailX, detailY);
-  detailY += 7;
-  doc.text(
-    `Aporte personal: ${formatCurrency(aportePersonal)}`,
-    detailX,
-    detailY,
-  );
-  detailY += 7;
-  doc.text(`Total grupo: ${formatCurrency(gastosTotal)}`, detailX, detailY);
-  detailY += 7;
-  doc.text(
-    `Precio por niño: (${formatCurrency(gastosTotal)} - ${formatCurrency(aportePersonal)}) / ${ninos} = ${formatCurrency(precioPorNino)}`,
-    detailX,
-    detailY,
-  );
-  detailY += 12;
-
-  doc.setFontSize(10);
-  doc.setTextColor(...secondaryColor);
-
-  doc.text(texto_footer, x, y, { align: "center" });
   doc.link(startX, y - 5, textWidth, 10, {
     url: "https://pardalaco.github.io/Juniors-Presupuestos/",
   });
