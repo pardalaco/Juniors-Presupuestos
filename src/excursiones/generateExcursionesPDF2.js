@@ -302,7 +302,7 @@ export function generatePDF() {
 
   if (personalData.length > 0) {
     doc.setTextColor(0, 0, 0);
-    doc.text("Precio Personal:", colRightX + 5, yRight);
+    doc.text("Coste Personal:", colRightX + 5, yRight);
     doc.setFontSize(9);
     doc.setTextColor(...secondaryColor);
     doc.text(
@@ -329,11 +329,12 @@ export function generatePDF() {
     yRight += 12;
   }
 
+  doc.setFontSize(fontSizeCuerpo);
   doc.setDrawColor(...primaryColor);
   doc.line(colRightX + 5, yRight - 2, colRightX + colWidth, yRight - 2);
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "bold");
-  doc.text("Total Precio Niño:", colRightX + 5, yRight + 5);
+  doc.text("Precio por Niño:", colRightX + 5, yRight + 5);
   doc.text(acumuladoCosteNino + "€", colRightX + colWidth, yRight + 5, {
     align: "right",
   });
