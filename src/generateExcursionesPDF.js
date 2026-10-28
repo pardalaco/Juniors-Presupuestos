@@ -91,7 +91,7 @@ export function generatePDF() {
   const activities = window.activities || [];
 
   const activityItems = activities.map((activity) => [
-    activity.name,
+    activity.name || "Nueva actividad",
     `${activity.price}€ (${activity.mode})`,
   ]);
 

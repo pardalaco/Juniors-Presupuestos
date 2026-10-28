@@ -20,7 +20,7 @@ function formatCurrency(value) {
 }
 
 function addActivity() {
-  activities.push({ name: "Nueva actividad", price: 0, mode: "total" });
+  activities.push({ name: "", price: 0, mode: "total" });
   renderActivities();
   calculate();
 }
@@ -48,7 +48,7 @@ function renderActivities() {
   activities.forEach((activity, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-            <td><input type="text" value="${activity.name}" class="rol-input" onchange="updateActivity(${index}, 'name', this.value)" /></td>
+            <td><input type="text" value="${activity.name}" placeholder="Nueva actividad" class="rol-input" onchange="updateActivity(${index}, 'name', this.value)" /></td>
             <td><input type="number" min="0" step="0.5" value="${activity.price}" class="rol-input" onchange="updateActivity(${index}, 'price', this.value)" /></td>
             <td>
               <select onchange="updateActivity(${index}, 'mode', this.value)">
