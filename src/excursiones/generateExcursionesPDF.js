@@ -72,20 +72,30 @@ export function generatePDF() {
   ]);
 
   // Personal (columna izquierda)
-  addSection("Participantes y Pagos del Personal", [
-    [
+
+  let personal = [];
+
+  if (document.getElementById("educadores").value != 0) {
+    personal.push([
       "Educadores",
       `${document.getElementById("educadores").value} (Pagan: ${document.getElementById("pagoEducadores").value}€)`,
-    ],
-    [
+    ]);
+  }
+
+  if (document.getElementById("preeducadores").value != 0) {
+    personal.push([
       "Preeducadores",
       `${document.getElementById("preeducadores").value} (Pagan: ${document.getElementById("pagoPreeducadores").value}€)`,
-    ],
-    [
+    ]);
+  }
+  if (document.getElementById("otros").value != 0) {
+    personal.push([
       "Otros",
       `${document.getElementById("otros").value} (Pagan: ${document.getElementById("pagoOtros").value}€)`,
-    ],
-  ]);
+    ]);
+  }
+
+  addSection("Participantes y Pagos del Personal", personal);
 
   // Gastos y Actividades (columna derecha)
   const activities = window.activities || [];
