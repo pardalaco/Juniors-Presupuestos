@@ -226,7 +226,7 @@ export function generatePDF() {
       doc.setTextColor(...accentColor);
       doc.text(total + "€", colLeftX + colWidth, yLeft, { align: "right" });
       yLeft += 8;
-      totalAporteDelPersonal = +total;
+      totalAporteDelPersonal += total;
     });
   }
 
@@ -318,7 +318,15 @@ export function generatePDF() {
       align: "right",
     });
 
-    yRight += 8;
+    doc.setFontSize(7.5); // Reducido ligeramente para que quepa bien el texto explicativo
+    doc.setTextColor(...secondaryColor);
+    doc.text(
+      "(total actividades/persona x personal - aporte personal) / niños",
+      colRightX + 5,
+      yRight + 4,
+    );
+
+    yRight += 12;
   }
 
   doc.setDrawColor(...primaryColor);
