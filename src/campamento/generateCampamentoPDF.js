@@ -180,7 +180,7 @@ export function generatePDF() {
   doc.line(colRightX + 5, yRight - 2, colRightX + colWidth, yRight - 2);
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "bold");
-  doc.text("TOTAL PRESUPUESTO:", colRightX + 5, yRight + 5);
+  doc.text("Total Presupuesto:", colRightX + 5, yRight + 5);
   doc.text(
     document.getElementById("presupuestoTotal").textContent,
     colRightX + colWidth,
