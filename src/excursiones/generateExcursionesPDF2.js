@@ -41,6 +41,18 @@ export function generatePDF() {
   let yLeft = 60;
   let yRight = 60;
 
+  // --- NÚMERO DE PERSONAS ---
+  const numNinos = Number(document.getElementById("ninos").value) || 0;
+  const numEducadores =
+    Number(document.getElementById("educadores").value) || 0;
+  const numPreeducadores =
+    Number(document.getElementById("preeducadores").value) || 0;
+  const numOtros = Number(document.getElementById("otros").value) || 0;
+
+  const numTotalPersonas = String(
+    numNinos + numEducadores + numPreeducadores + numOtros,
+  );
+
   // --- COLUMNA IZQUIERDA: 1. Nº PERSONAS ---
   doc.setTextColor(...primaryColor);
   doc.setFontSize(14);
@@ -51,27 +63,14 @@ export function generatePDF() {
   doc.setFontSize(fontSizeCuerpo);
   doc.setFont("helvetica", "normal");
 
-  // Número de personas
-  const numNinos = document.getElementById("ninos").value;
-  const numEducadores = document.getElementById("educadores").value;
-  const numPreeducadores = document.getElementById("preeducadores").value;
-  const numOtros = document.getElementById("otros").value;
-
-  const numTotalPersonas = String(
-    Number(numNinos) +
-      Number(numEducadores) +
-      Number(numPreeducadores) +
-      Number(numOtros),
-  );
-
   let personas = [
-    ["Niños", numNinos],
-    ["Educadores", numEducadores],
-    ["Preeducadores", numPreeducadores],
-    ["Cocina y otros", numOtros],
+    ["Niños", String(numNinos)],
+    ["Educadores", String(numEducadores)],
+    ["Preeducadores", String(numPreeducadores)],
+    ["Cocina y otros", String(numOtros)],
   ];
 
-  personas = personas.filter((p) => p[1] > 0);
+  personas = personas.filter((p) => Number(p[1]) > 0);
 
   personas.forEach(([label, value]) => {
     doc.setTextColor(0, 0, 0);
@@ -90,7 +89,7 @@ export function generatePDF() {
     align: "right",
   });
 
-  // --- COLUMNA DERECHA: COSTES TOTALES (Intercambiado) ---
+  // --- COLUMNA DERECHA: COSTES TOTALES ---
   doc.setTextColor(...primaryColor);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
@@ -100,7 +99,6 @@ export function generatePDF() {
   doc.setFontSize(fontSizeCuerpo);
   doc.setFont("helvetica", "normal");
 
-  // Selecciona todas las filas
   const filas = document.querySelectorAll("#activityBody tr");
   const actividades = [];
 
@@ -109,17 +107,14 @@ export function generatePDF() {
     const inputPrice = fila.querySelector('input[type="number"]');
     const selectMode = fila.querySelector("select");
 
-    // Comprobamos que la fila tenga los elementos (para evitar errores si hay cabeceras u otras filas)
     if (inputName && inputPrice && selectMode) {
       actividades.push({
         name: inputName.value,
-        price: parseFloat(inputPrice.value) || 0, // Lo convertimos a número (o 0 si está vacío)
+        price: parseFloat(inputPrice.value) || 0,
         mode: selectMode.value,
       });
     }
   });
-
-  console.log(actividades);
 
   actividades.forEach((actividad) => {
     doc.setTextColor(0, 0, 0);
@@ -141,9 +136,7 @@ export function generatePDF() {
       );
 
       doc.setFontSize(fontSizeCuerpo);
-      const precioTotal = String(
-        Number(actividad.price) * Number(numTotalPersonas),
-      );
+      const precioTotal = String(actividad.price * Number(numTotalPersonas));
 
       doc.setTextColor(...accentColor);
       doc.text(precioTotal + "€", colRightX + colWidth, yRight, {
@@ -154,7 +147,7 @@ export function generatePDF() {
       doc.text(`${actividad.price}€ x ${numNinos}n`, colRightX + 38, yRight);
 
       doc.setFontSize(fontSizeCuerpo);
-      const precioTotal = String(Number(actividad.price) * Number(numNinos));
+      const precioTotal = String(actividad.price * numNinos);
 
       doc.setTextColor(...accentColor);
       doc.text(precioTotal + "€", colRightX + colWidth, yRight, {
@@ -182,33 +175,27 @@ export function generatePDF() {
   let personalData = [
     [
       "Educadores",
-      document.getElementById("pagoEducadores").value,
-      document.getElementById("educadores").value,
-      document.getElementById("pagoEducadores").value *
-        document.getElementById("educadores").value,
+      parseFloat(document.getElementById("pagoEducadores").value) || 0,
+      numEducadores,
+      (parseFloat(document.getElementById("pagoEducadores").value) || 0) *
+        numEducadores,
     ],
     [
       "Preeducadores",
-      document.getElementById("pagoPreeducadores").value,
-      document.getElementById("preeducadores").value,
-      document.getElementById("pagoPreeducadores").value *
-        document.getElementById("preeducadores").value,
+      parseFloat(document.getElementById("pagoPreeducadores").value) || 0,
+      numPreeducadores,
+      (parseFloat(document.getElementById("pagoPreeducadores").value) || 0) *
+        numPreeducadores,
     ],
     [
       "Cocina/Otros",
-      document.getElementById("pagoOtros").value,
-      document.getElementById("otros").value,
-      document.getElementById("pagoOtros").value *
-        document.getElementById("otros").value,
+      parseFloat(document.getElementById("pagoOtros").value) || 0,
+      numOtros,
+      (parseFloat(document.getElementById("pagoOtros").value) || 0) * numOtros,
     ],
   ];
-  console.log(personalData);
 
-  personalData = personalData.filter(
-    (tipoPersonal) => Number(tipoPersonal[2]) > 0,
-  );
-
-  console.log(personalData);
+  personalData = personalData.filter((tipoPersonal) => tipoPersonal[2] > 0);
 
   const ySeccionFinal = Math.max(yLeft, yRight) + 20;
   yLeft = ySeccionFinal;
@@ -237,25 +224,106 @@ export function generatePDF() {
       yLeft += 8;
     });
   }
-  // Derecha: Resumen Costes Niño
+
+  // --- DERECHA: Pago por niño (Alineado y separado a la derecha) ---
   doc.setTextColor(...primaryColor);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text("Resumen costes niño", colRightX, yRight);
+  doc.text("Pago por niño", colRightX, yRight);
 
   yRight += 10;
   doc.setFontSize(fontSizeCuerpo);
   doc.setFont("helvetica", "normal");
 
-  const resumenNino = [];
+  let acumuladoCosteNino = 0;
+  // Posición X alineada a la derecha para los cálculos intermedios (dejando espacio antes del precio total)
+  const xCalculosIntermedios = colRightX + colWidth - 22;
 
-  resumenNino.forEach(([label, value]) => {
+  // 1. Actividades para el niño
+  actividades.forEach((actividad) => {
     doc.setTextColor(0, 0, 0);
-    doc.text(label + ":", colRightX + 5, yRight);
+    doc.text(actividad.name + ":", colRightX + 5, yRight);
+    doc.setFontSize(9);
+
+    let costePorNinoActividad = 0;
+    if (numNinos > 0) {
+      if (actividad.mode === "total") {
+        costePorNinoActividad = actividad.price / numNinos;
+        doc.setTextColor(...secondaryColor);
+        doc.text(
+          `${actividad.price}€ / ${numNinos}n`,
+          xCalculosIntermedios,
+          yRight,
+          { align: "right" },
+        );
+      } else if (actividad.mode === "porPersona") {
+        costePorNinoActividad =
+          (actividad.price * Number(numTotalPersonas)) / numNinos;
+        doc.setTextColor(...secondaryColor);
+        doc.text(
+          `${actividad.price}€ x ${numTotalPersonas}p / ${numNinos}n`,
+          xCalculosIntermedios,
+          yRight,
+          { align: "right" },
+        );
+      } else if (actividad.mode === "porNino") {
+        costePorNinoActividad = actividad.price;
+      }
+    }
+
+    acumuladoCosteNino += costePorNinoActividad;
+
+    doc.setFontSize(fontSizeCuerpo);
     doc.setTextColor(...accentColor);
-    doc.text(value, colRightX + colWidth, yRight, { align: "right" });
+    doc.text(
+      costePorNinoActividad.toFixed(2) + "€",
+      colRightX + colWidth,
+      yRight,
+      {
+        align: "right",
+      },
+    );
+
     yRight += 8;
   });
+
+  // 2. Personal para el niño
+  let costeTotalPersonal = 0;
+  personalData.forEach(([label, price, qty, total]) => {
+    costeTotalPersonal += total;
+  });
+
+  let costePersonalPorNino = 0;
+  if (numNinos > 0) {
+    costePersonalPorNino = costeTotalPersonal / numNinos;
+  }
+  acumuladoCosteNino += costePersonalPorNino;
+
+  if (personalData.length > 0) {
+    doc.setTextColor(0, 0, 0);
+    doc.text("Precio Personal:", colRightX + 5, yRight);
+    doc.setFontSize(9);
+    doc.setTextColor(...secondaryColor);
+    doc.text(
+      `${costeTotalPersonal.toFixed(2)}€ / ${numNinos}n`,
+      xCalculosIntermedios,
+      yRight,
+      { align: "right" },
+    );
+
+    doc.setFontSize(fontSizeCuerpo);
+    doc.setTextColor(...accentColor);
+    doc.text(
+      costePersonalPorNino.toFixed(2) + "€",
+      colRightX + colWidth,
+      yRight,
+      {
+        align: "right",
+      },
+    );
+
+    yRight += 8;
+  }
 
   doc.setDrawColor(...primaryColor);
   doc.line(colRightX + 5, yRight - 2, colRightX + colWidth, yRight - 2);
@@ -263,7 +331,7 @@ export function generatePDF() {
   doc.setFont("helvetica", "bold");
   doc.text("Total Precio Niño:", colRightX + 5, yRight + 5);
   doc.text(
-    document.getElementById("totalGrupo").textContent,
+    acumuladoCosteNino.toFixed(2) + "€",
     colRightX + colWidth,
     yRight + 5,
     { align: "right" },
