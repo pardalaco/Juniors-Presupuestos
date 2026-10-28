@@ -20,10 +20,10 @@ export function generatePDF() {
     .value.trim();
   const titulo = nombreExcursion
     ? `Presupuesto ${nombreExcursion}`
-    : "Presupuesto Campamento";
+    : "Presupuesto Excursión";
   const nombreArchivo = nombreExcursion
     ? `presupuesto-${nombreExcursion.replace(/\s+/g, "_")}`
-    : "presupuesto-campamento";
+    : "presupuesto-excursion";
   doc.text(titulo, 105, 20, { align: "center" });
 
   // Fecha
