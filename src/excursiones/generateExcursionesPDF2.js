@@ -49,6 +49,8 @@ export function generatePDF() {
     Number(document.getElementById("preeducadores").value) || 0;
   const numOtros = Number(document.getElementById("otros").value) || 0;
 
+  const numTotalPersonal = String(numEducadores + numPreeducadores + numOtros);
+
   const numTotalPersonas = String(
     numNinos + numEducadores + numPreeducadores + numOtros,
   );
@@ -201,6 +203,8 @@ export function generatePDF() {
   yLeft = ySeccionFinal;
   yRight = ySeccionFinal;
 
+  let totalAporteDelPersonal = 0;
+
   if (personalData.length) {
     // Izquierda: Pagos Personal
     doc.setTextColor(...primaryColor);
@@ -222,6 +226,7 @@ export function generatePDF() {
       doc.setTextColor(...accentColor);
       doc.text(total + "€", colLeftX + colWidth, yLeft, { align: "right" });
       yLeft += 8;
+      totalAporteDelPersonal = +total;
     });
   }
 
@@ -237,7 +242,7 @@ export function generatePDF() {
 
   let acumuladoCosteNino = 0;
   // Posición X alineada a la derecha para los cálculos intermedios (dejando espacio antes del precio total)
-  const xCalculosIntermedios = colRightX + colWidth - 22;
+  const xCalculosIntermedios = colRightX + colWidth - 12;
 
   // 1. Actividades para el niño
   actividades.forEach((actividad) => {
@@ -248,25 +253,15 @@ export function generatePDF() {
     let costePorNinoActividad = 0;
     if (numNinos > 0) {
       if (actividad.mode === "total") {
-        costePorNinoActividad = actividad.price / numNinos;
+        costePorNinoActividad = actividad.price / numTotalPersonas;
         doc.setTextColor(...secondaryColor);
         doc.text(
-          `${actividad.price}€ / ${numNinos}n`,
+          `${actividad.price}€ / ${numTotalPersonas}p`,
           xCalculosIntermedios,
           yRight,
           { align: "right" },
         );
-      } else if (actividad.mode === "porPersona") {
-        costePorNinoActividad =
-          (actividad.price * Number(numTotalPersonas)) / numNinos;
-        doc.setTextColor(...secondaryColor);
-        doc.text(
-          `${actividad.price}€ x ${numTotalPersonas}p / ${numNinos}n`,
-          xCalculosIntermedios,
-          yRight,
-          { align: "right" },
-        );
-      } else if (actividad.mode === "porNino") {
+      } else {
         costePorNinoActividad = actividad.price;
       }
     }
@@ -287,17 +282,23 @@ export function generatePDF() {
     yRight += 8;
   });
 
+  let precioActividadPorPersona = acumuladoCosteNino;
+
   // 2. Personal para el niño
-  let costeTotalPersonal = 0;
-  personalData.forEach(([label, price, qty, total]) => {
-    costeTotalPersonal += total;
-  });
+  let costeTotalPersonal =
+    (precioActividadPorPersona * numTotalPersonal - totalAporteDelPersonal) /
+    numNinos;
+
+  // Redondeos
+  costeTotalPersonal = Math.round(costeTotalPersonal * 100) / 100;
+  precioActividadPorPersona = Math.round(precioActividadPorPersona * 100) / 100;
 
   let costePersonalPorNino = 0;
   if (numNinos > 0) {
     costePersonalPorNino = costeTotalPersonal / numNinos;
   }
   acumuladoCosteNino += costePersonalPorNino;
+  acumuladoCosteNino = Math.round(acumuladoCosteNino * 100) / 100;
 
   if (personalData.length > 0) {
     doc.setTextColor(0, 0, 0);
@@ -305,7 +306,7 @@ export function generatePDF() {
     doc.setFontSize(9);
     doc.setTextColor(...secondaryColor);
     doc.text(
-      `${costeTotalPersonal.toFixed(2)}€ / ${numNinos}n`,
+      `(${precioActividadPorPersona} * ${numTotalPersonal} - ${totalAporteDelPersonal}) / ${numNinos}n`,
       xCalculosIntermedios,
       yRight,
       { align: "right" },
@@ -313,14 +314,9 @@ export function generatePDF() {
 
     doc.setFontSize(fontSizeCuerpo);
     doc.setTextColor(...accentColor);
-    doc.text(
-      costePersonalPorNino.toFixed(2) + "€",
-      colRightX + colWidth,
-      yRight,
-      {
-        align: "right",
-      },
-    );
+    doc.text(costeTotalPersonal + "€", colRightX + colWidth, yRight, {
+      align: "right",
+    });
 
     yRight += 8;
   }
@@ -330,12 +326,9 @@ export function generatePDF() {
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "bold");
   doc.text("Total Precio Niño:", colRightX + 5, yRight + 5);
-  doc.text(
-    acumuladoCosteNino.toFixed(2) + "€",
-    colRightX + colWidth,
-    yRight + 5,
-    { align: "right" },
-  );
+  doc.text(acumuladoCosteNino + "€", colRightX + colWidth, yRight + 5, {
+    align: "right",
+  });
 
   // --- PIE DE PÁGINA CON LINK ---
   const footerY = 280;
