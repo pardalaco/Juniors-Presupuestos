@@ -197,7 +197,9 @@ export function generatePDF() {
     ],
   ];
 
-  personalData = personalData.filter((tipoPersonal) => tipoPersonal[2] > 0);
+  personalData = personalData.filter((tipoPersonal) => tipoPersonal[3] > 0);
+
+  console.log(personalData);
 
   const ySeccionFinal = Math.max(yLeft, yRight) + 20;
   yLeft = ySeccionFinal;
