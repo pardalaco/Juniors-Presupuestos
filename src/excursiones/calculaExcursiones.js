@@ -182,3 +182,21 @@ if (themeToggle) {
 renderActivities();
 initializeTheme();
 calculate();
+
+document.getElementById("ninos").addEventListener("change", calculate);
+document.getElementById("educadores").addEventListener("change", calculate);
+document.getElementById("pagoEducadores").addEventListener("change", calculate);
+document.getElementById("preeducadores").addEventListener("change", calculate);
+document
+  .getElementById("pagoPreeducadores")
+  .addEventListener("change", calculate);
+document.getElementById("otros").addEventListener("change", calculate);
+document.getElementById("pagoOtros").addEventListener("change", calculate);
+
+document
+  .getElementById("addActivityButton")
+  .addEventListener("click", addActivity);
+
+window.updateActivity = updateActivity;
+window.removeActivity = removeActivity;
+window.renderActivities = renderActivities;

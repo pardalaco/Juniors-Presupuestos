@@ -69,7 +69,6 @@
               value="40"
               min="1"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
           <div class="payment-cell"></div>
@@ -82,7 +81,6 @@
               value="12"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
           <div class="payment-cell">
@@ -93,7 +91,6 @@
               value="0"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
 
@@ -105,7 +102,6 @@
               value="0"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
           <div class="payment-cell">
@@ -116,7 +112,6 @@
               value="0"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
 
@@ -128,7 +123,6 @@
               value="0"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
           <div class="payment-cell">
@@ -139,7 +133,6 @@
               value="0"
               min="0"
               class="rol-input"
-              onchange="calculate()"
             />
           </div>
         </div>
@@ -168,11 +161,7 @@
           <tbody id="activityBody"></tbody>
         </table>
         <div class="activity-actions">
-          <button
-            class="button-secondary"
-            type="button"
-            onclick="addActivity()"
-          >
+          <button class="button-secondary" type="button" id="addActivityButton">
             Añadir gasto/actividad
           </button>
         </div>
