@@ -295,11 +295,7 @@ export function generatePDF() {
   costeTotalPersonal = Math.round(costeTotalPersonal * 100) / 100;
   precioActividadPorPersona = Math.round(precioActividadPorPersona * 100) / 100;
 
-  let costePersonalPorNino = 0;
-  if (numNinos > 0) {
-    costePersonalPorNino = costeTotalPersonal / numNinos;
-  }
-  acumuladoCosteNino += costePersonalPorNino;
+  acumuladoCosteNino += costeTotalPersonal;
   acumuladoCosteNino = Math.round(acumuladoCosteNino * 100) / 100;
 
   if (personalData.length > 0) {
