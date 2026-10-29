@@ -299,34 +299,32 @@ export function generatePDF() {
   acumuladoCosteNino += costeTotalPersonal;
   acumuladoCosteNino = Math.round(acumuladoCosteNino * 100) / 100;
 
-  if (personalData.length > 0) {
-    doc.setTextColor(0, 0, 0);
-    doc.text("Coste Personal:", colRightX + 5, yRight);
-    doc.setFontSize(9);
-    doc.setTextColor(...secondaryColor);
-    doc.text(
-      `(${precioActividadPorPersona} * ${numTotalPersonal} - ${totalAporteDelPersonal}) / ${numNinos}n`,
-      xCalculosIntermedios,
-      yRight,
-      { align: "right" },
-    );
+  doc.setTextColor(0, 0, 0);
+  doc.text("Coste Personal:", colRightX + 5, yRight);
+  doc.setFontSize(9);
+  doc.setTextColor(...secondaryColor);
+  doc.text(
+    `(${precioActividadPorPersona} * ${numTotalPersonal} - ${totalAporteDelPersonal}) / ${numNinos}n`,
+    xCalculosIntermedios,
+    yRight,
+    { align: "right" },
+  );
 
-    doc.setFontSize(fontSizeCuerpo);
-    doc.setTextColor(...accentColor);
-    doc.text(costeTotalPersonal + "€", colRightX + colWidth, yRight, {
-      align: "right",
-    });
+  doc.setFontSize(fontSizeCuerpo);
+  doc.setTextColor(...accentColor);
+  doc.text(costeTotalPersonal + "€", colRightX + colWidth, yRight, {
+    align: "right",
+  });
 
-    doc.setFontSize(7.5); // Reducido ligeramente para que quepa bien el texto explicativo
-    doc.setTextColor(...secondaryColor);
-    doc.text(
-      "(total actividades/persona x personal - aporte personal) / niños",
-      colRightX + 5,
-      yRight + 4,
-    );
+  doc.setFontSize(7.5); // Reducido ligeramente para que quepa bien el texto explicativo
+  doc.setTextColor(...secondaryColor);
+  doc.text(
+    "(total actividades/persona x personal - aporte personal) / niños",
+    colRightX + 5,
+    yRight + 4,
+  );
 
-    yRight += 12;
-  }
+  yRight += 12;
 
   doc.setFontSize(fontSizeCuerpo);
   doc.setDrawColor(...primaryColor);
