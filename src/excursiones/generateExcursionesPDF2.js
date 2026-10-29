@@ -111,12 +111,13 @@ export function generatePDF() {
 
     if (inputName && inputPrice && selectMode) {
       actividades.push({
-        name: inputName.value,
+        name: inputName.value || "Nueva Actividad",
         price: parseFloat(inputPrice.value) || 0,
         mode: selectMode.value,
       });
     }
   });
+  console.log(actividades);
 
   actividades.forEach((actividad) => {
     doc.setTextColor(0, 0, 0);
@@ -133,7 +134,7 @@ export function generatePDF() {
       doc.setTextColor(...secondaryColor);
       doc.text(
         `${actividad.price}€ x ${numTotalPersonas}p`,
-        colRightX + 38,
+        colRightX + 50,
         yRight,
       );
 
@@ -146,7 +147,7 @@ export function generatePDF() {
       });
     } else if (actividad.mode === "porNino") {
       doc.setTextColor(...secondaryColor);
-      doc.text(`${actividad.price}€ x ${numNinos}n`, colRightX + 38, yRight);
+      doc.text(`${actividad.price}€ x ${numNinos}n`, colRightX + 50, yRight);
 
       doc.setFontSize(fontSizeCuerpo);
       const precioTotal = String(actividad.price * numNinos);
