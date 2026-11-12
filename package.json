@@ -1,6 +1,6 @@
 {
   "name": "juniors-presupuestos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Esta colección de páginas HTML está diseñada para ayudar a calcular presupuestos de actividades escolares: campamentos y excursiones.",
   "main": "index.js",
   "scripts": {
