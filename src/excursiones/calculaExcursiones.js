@@ -105,43 +105,65 @@ function calculate() {
     formatCurrency(costePorNino);
   document.getElementById("totalPersonas").textContent = totalPersonas;
 
-  const summary = [
-    {
-      concepto: "Gastos y actividades",
-      total: gastosTotal,
-      detalle: activities.length + " gasto(s)",
-    },
-    {
-      concepto: "Pago educadores",
-      total: pagoEducadoresTotal,
-      detalle: `${educadores} x ${formatCurrency(pagoEducadores)}`,
-    },
-    {
-      concepto: "Pago preeducadores",
-      total: pagoPreeducadoresTotal,
-      detalle: `${preeducadores} x ${formatCurrency(pagoPreeducadores)}`,
-    },
-    {
-      concepto: "Pago otros",
-      total: pagoOtrosTotal,
-      detalle: `${otros} x ${formatCurrency(pagoOtros)}`,
-    },
-    {
-      concepto: "Total grupo",
-      total: totalGrupo,
-      detalle: `${totalPersonas} personas`,
-    },
-  ];
+  const filas = document.querySelectorAll("#activityBody tr");
+
+  const summary = [];
+
+  filas.forEach((fila) => {
+    const inputName = fila.querySelector('input[type="text"]');
+    const inputPrice = fila.querySelector('input[type="number"]');
+    const selectMode = fila.querySelector("select");
+
+    const price = parseFloat(inputPrice.value) || 0;
+    let total = 0;
+    if (selectMode.value === "total") {
+      total = price;
+    } else if (selectMode.value === "porPersona") {
+      total = price * totalPersonas;
+    } else if (selectMode.value === "porNino") {
+      total = price * ninos;
+    }
+
+    if (inputName && inputPrice && selectMode) {
+      summary.push({
+        name: inputName.value || "Nueva Actividad",
+        price: price,
+        mode: selectMode.value,
+        total: total,
+      });
+    }
+  });
+
+  summary.push({
+    name: "Total",
+    total: gastosTotal,
+  });
 
   const summaryBody = document.getElementById("summaryBody");
   summaryBody.innerHTML = "";
   summary.forEach((item) => {
     const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${item.concepto}</td>
-            <td style="text-align: right">${formatCurrency(item.total)}</td>
-            <td style="text-align: right">${item.detalle}</td>
+
+    if (item.mode === "porPersona") {
+      row.innerHTML = `
+            <td>${item.name}</td>
+            <td style="text-align: right">${item.price}€ x ${totalPersonas}p</td>
+            <td style="text-align: right">${item.total}€</td>
           `;
+    } else if (item.mode === "porNino") {
+      row.innerHTML = `
+            <td>${item.name}</td>
+            <td style="text-align: right">${item.price}€ x ${ninos}n</td>
+            <td style="text-align: right">${item.total}€</td>
+          `;
+    } else {
+      row.innerHTML = `
+            <td>${item.name}</td>
+            <td style="text-align: right"></td>
+            <td style="text-align: right">${item.total}€</td>
+          `;
+    }
+
     summaryBody.appendChild(row);
   });
 }
