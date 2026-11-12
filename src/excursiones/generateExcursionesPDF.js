@@ -244,6 +244,7 @@ export function generatePDF() {
   doc.setFont("helvetica", "normal");
 
   let acumuladoCosteNino = 0;
+  let precioActividadPorPersona = 0;
   // Posición X alineada a la derecha para los cálculos intermedios (dejando espacio antes del precio total)
   const xCalculosIntermedios = colRightX + colWidth - 12;
 
@@ -253,10 +254,13 @@ export function generatePDF() {
     doc.text(actividad.name + ":", colRightX + 5, yRight);
     doc.setFontSize(9);
 
-    let costePorNinoActividad = 0;
+    let costeActividad = 0;
     if (numNinos > 0) {
       if (actividad.mode === "total") {
-        costePorNinoActividad = actividad.price / numTotalPersonas;
+        costeActividad = actividad.price / numTotalPersonas;
+        acumuladoCosteNino += costeActividad;
+        precioActividadPorPersona += costeActividad;
+
         doc.setTextColor(...secondaryColor);
         doc.text(
           `${actividad.price}€ / ${numTotalPersonas}p`,
@@ -264,28 +268,24 @@ export function generatePDF() {
           yRight,
           { align: "right" },
         );
-      } else {
-        costePorNinoActividad = actividad.price;
+      } else if (actividad.mode === "porNino") {
+        costeActividad = actividad.price;
+        acumuladoCosteNino += costeActividad;
+      } else if (actividad.mode === "porPersona") {
+        costeActividad = actividad.price;
+        acumuladoCosteNino += costeActividad;
+        precioActividadPorPersona += costeActividad;
       }
     }
 
-    acumuladoCosteNino += costePorNinoActividad;
-
     doc.setFontSize(fontSizeCuerpo);
     doc.setTextColor(...accentColor);
-    doc.text(
-      costePorNinoActividad.toFixed(2) + "€",
-      colRightX + colWidth,
-      yRight,
-      {
-        align: "right",
-      },
-    );
+    doc.text(costeActividad.toFixed(2) + "€", colRightX + colWidth, yRight, {
+      align: "right",
+    });
 
     yRight += 8;
   });
-
-  let precioActividadPorPersona = acumuladoCosteNino;
 
   // 2. Personal para el niño
   let costeTotalPersonal =
