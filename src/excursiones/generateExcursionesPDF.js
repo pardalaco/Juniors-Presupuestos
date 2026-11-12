@@ -117,7 +117,6 @@ export function generatePDF() {
       });
     }
   });
-  console.log(actividades);
 
   actividades.forEach((actividad) => {
     doc.setTextColor(0, 0, 0);
@@ -199,8 +198,6 @@ export function generatePDF() {
   ];
 
   personalData = personalData.filter((tipoPersonal) => tipoPersonal[3] > 0);
-
-  console.log(personalData);
 
   const ySeccionFinal = Math.max(yLeft, yRight) + 20;
   yLeft = ySeccionFinal;
