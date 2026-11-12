@@ -134,7 +134,7 @@ export function generatePDF() {
       doc.setTextColor(...secondaryColor);
       doc.text(
         `${actividad.price}€ x ${numTotalPersonas}p`,
-        colRightX + 50,
+        colRightX + 35,
         yRight,
       );
 
@@ -147,7 +147,7 @@ export function generatePDF() {
       });
     } else if (actividad.mode === "porNino") {
       doc.setTextColor(...secondaryColor);
-      doc.text(`${actividad.price}€ x ${numNinos}n`, colRightX + 50, yRight);
+      doc.text(`${actividad.price}€ x ${numNinos}n`, colRightX + 35, yRight);
 
       doc.setFontSize(fontSizeCuerpo);
       const precioTotal = String(actividad.price * numNinos);
@@ -264,7 +264,7 @@ export function generatePDF() {
         doc.setTextColor(...secondaryColor);
         doc.text(
           `${actividad.price}€ / ${numTotalPersonas}p`,
-          xCalculosIntermedios,
+          colRightX + 62,
           yRight,
           { align: "right" },
         );
@@ -305,7 +305,7 @@ export function generatePDF() {
   doc.setTextColor(...secondaryColor);
   doc.text(
     `(${precioActividadPorPersona} * ${numTotalPersonal} - ${totalAporteDelPersonal}) / ${numNinos}n`,
-    xCalculosIntermedios,
+    colRightX + 62,
     yRight,
     { align: "right" },
   );
